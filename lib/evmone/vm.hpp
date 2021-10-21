@@ -4,12 +4,12 @@
 #pragma once
 
 #include "tracing.hpp"
-#include <evmc/evmc.h>
+#include <ivmc/ivmc.h>
 
 namespace evmone
 {
 /// The evmone EVMC instance.
-class VM : public evmc_vm
+class VM : public ivmc_vm
 {
     std::unique_ptr<Tracer> m_first_tracer;
 

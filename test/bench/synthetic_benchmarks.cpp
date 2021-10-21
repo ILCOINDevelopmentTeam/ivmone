@@ -5,7 +5,7 @@
 #include "synthetic_benchmarks.hpp"
 #include "helpers.hpp"
 #include "test/utils/bytecode.hpp"
-#include <evmc/instructions.h>
+#include <ivmc/instructions.h>
 #include <evmone/instruction_traits.hpp>
 
 using namespace benchmark;
@@ -36,7 +36,7 @@ enum class InstructionCategory : char
     other = 'X',   ///< Not any of the categories above.
 };
 
-constexpr InstructionCategory get_instruction_category(evmc_opcode opcode) noexcept
+constexpr InstructionCategory get_instruction_category(ivmc_opcode opcode) noexcept
 {
     const auto trait = instr::traits[opcode];
     if (opcode >= OP_PUSH1 && opcode <= OP_PUSH32)
@@ -59,7 +59,7 @@ constexpr InstructionCategory get_instruction_category(evmc_opcode opcode) noexc
 
 struct CodeParams
 {
-    evmc_opcode opcode;
+    ivmc_opcode opcode;
     Mode mode;
 };
 
@@ -241,16 +241,16 @@ void register_synthetic_benchmarks()
             params_list.end(), {{opcode, Mode::min_stack}, {opcode, Mode::full_stack}});
 
     // PUSH.
-    for (auto opcode = OP_PUSH1; opcode <= OP_PUSH32; opcode = static_cast<evmc_opcode>(opcode + 1))
+    for (auto opcode = OP_PUSH1; opcode <= OP_PUSH32; opcode = static_cast<ivmc_opcode>(opcode + 1))
         params_list.insert(
             params_list.end(), {{opcode, Mode::min_stack}, {opcode, Mode::full_stack}});
 
     // SWAP.
-    for (auto opcode = OP_SWAP1; opcode <= OP_SWAP16; opcode = static_cast<evmc_opcode>(opcode + 1))
+    for (auto opcode = OP_SWAP1; opcode <= OP_SWAP16; opcode = static_cast<ivmc_opcode>(opcode + 1))
         params_list.insert(params_list.end(), {{opcode, Mode::min_stack}});
 
     // DUP.
-    for (auto opcode = OP_DUP1; opcode <= OP_DUP16; opcode = static_cast<evmc_opcode>(opcode + 1))
+    for (auto opcode = OP_DUP1; opcode <= OP_DUP16; opcode = static_cast<ivmc_opcode>(opcode + 1))
         params_list.insert(
             params_list.end(), {{opcode, Mode::min_stack}, {opcode, Mode::full_stack}});
 
@@ -258,9 +258,9 @@ void register_synthetic_benchmarks()
     for (auto& [vm_name, vm] : registered_vms)
     {
         RegisterBenchmark((std::string{vm_name} + "/total/synth/loop_v1").c_str(),
-            [&vm = vm](State& state) { bench_evmc_execute(state, vm, generate_loop_v1({})); });
+            [&vm = vm](State& state) { bench_ivmc_execute(state, vm, generate_loop_v1({})); });
         RegisterBenchmark((std::string{vm_name} + "/total/synth/loop_v2").c_str(),
-            [&vm = vm](State& state) { bench_evmc_execute(state, vm, generate_loop_v2({})); });
+            [&vm = vm](State& state) { bench_ivmc_execute(state, vm, generate_loop_v2({})); });
     }
 
     for (const auto params : params_list)
@@ -269,7 +269,7 @@ void register_synthetic_benchmarks()
         {
             RegisterBenchmark((std::string{vm_name} + "/total/synth/" + to_string(params)).c_str(),
                 [&vm = vm, params](
-                    State& state) { bench_evmc_execute(state, vm, generate_code(params)); })
+                    State& state) { bench_ivmc_execute(state, vm, generate_code(params)); })
                 ->Unit(kMicrosecond);
         }
     }

@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning].
 - The `evmone-bench` now reports time of execution without code analysis under "execute" label.
   The EVMC-like analysis + execution invocation is reported as "total".
   [#343](https://github.com/ethereum/evmone/pull/343)
-- The `evmone-bench` has started utilizing `evmc::MockedHost` which allows using
+- The `evmone-bench` has started utilizing `ivmc::MockedHost` which allows using
   state-access (e.g. `SLOAD`/`SSTORE`) instructions in benchmarks.
   [#319](https://github.com/ethereum/evmone/pull/319)
 
@@ -237,7 +237,7 @@ This release of evmone is binary compatible with 0.1 and delivers big performanc
   instead of a parametrized function handling each family of instructions.
   [#126](https://github.com/ethereum/evmone/pull/126)
   [#159](https://github.com/ethereum/evmone/pull/159)
-- [EVMC] upgraded to version [6.3.1](https://github.com/ethereum/evmc/releases/tag/v6.3.1).
+- [EVMC] upgraded to version [6.3.1](https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v6.3.1).
   [#129](https://github.com/ethereum/evmone/pull/129)
   [#77](https://github.com/ethereum/evmone/pull/77)
   [#96](https://github.com/ethereum/evmone/pull/96)
@@ -308,13 +308,13 @@ It delivers fully-compatible and high-speed EVM implementation.
 [Istanbul]: https://eips.ethereum.org/EIPS/eip-1679
 [Berlin]: https://github.com/ethereum/eth1.0-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md
 [London]: https://github.com/ethereum/eth1.0-specs/blob/master/network-upgrades/mainnet-upgrades/london.md
-[EVMC]: https://github.com/ethereum/evmc
-[EVMC 9.0.0]: https://github.com/ethereum/evmc/releases/tag/v9.0.0
-[EVMC 8.0.0]: https://github.com/ethereum/evmc/releases/tag/v8.0.0
-[EVMC 7.5.0]: https://github.com/ethereum/evmc/releases/tag/v7.5.0
-[EVMC 7.4.0]: https://github.com/ethereum/evmc/releases/tag/v7.4.0
-[EVMC 7.1.0]: https://github.com/ethereum/evmc/releases/tag/v7.1.0
-[EVMC 7.0.0]: https://github.com/ethereum/evmc/releases/tag/v7.0.0
+[EVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
+[EVMC 9.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v9.0.0
+[EVMC 8.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v8.0.0
+[EVMC 7.5.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.5.0
+[EVMC 7.4.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.4.0
+[EVMC 7.1.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.1.0
+[EVMC 7.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.0.0
 [intx]: https://github.com/chfast/intx
 [intx 0.6.0]: https://github.com/chfast/intx/releases/tag/v0.6.0
 [intx 0.5.0]: https://github.com/chfast/intx/releases/tag/v0.5.0

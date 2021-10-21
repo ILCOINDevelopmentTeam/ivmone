@@ -15,7 +15,7 @@ else()
 endif()
 
 add_executable(evmone-fuzzer fuzzer.cpp)
-target_link_libraries(evmone-fuzzer PRIVATE evmone testutils evmc::mocked_host)
+target_link_libraries(evmone-fuzzer PRIVATE evmone testutils ivmc::mocked_host)
 
 if(NOT fuzzing_coverage)
     # TODO: Aleth reports undefined behaviors, disable it for fuzzing.
@@ -38,7 +38,7 @@ if(NOT fuzzing_coverage)
 
         GIT_REPOSITORY https://github.com/ethereum/aleth
         GIT_TAG ${aleth_git_tag}
-        GIT_SUBMODULES evmc cmake/cable
+        GIT_SUBMODULES ivmc cmake/cable
         GIT_SHALLOW TRUE
         "${aleth_disable_git_update}"
 

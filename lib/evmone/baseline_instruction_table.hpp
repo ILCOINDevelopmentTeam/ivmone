@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.h>
+#include <ivmc/ivmc.h>
 #include <array>
 
 namespace evmone::baseline
@@ -17,5 +17,5 @@ struct InstructionTableEntry
 
 using InstructionTable = std::array<InstructionTableEntry, 256>;
 
-const InstructionTable& get_baseline_instruction_table(evmc_revision rev) noexcept;
+const InstructionTable& get_baseline_instruction_table(ivmc_revision rev) noexcept;
 }  // namespace evmone::baseline

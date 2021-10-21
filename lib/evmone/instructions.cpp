@@ -19,7 +19,7 @@ const instruction* op(const instruction* instr, AdvancedExecutionState& state) n
 }
 
 /// Wraps the generic instruction implementation to advanced instruction function signature.
-template <evmc_status_code instr_fn(ExecutionState&)>
+template <ivmc_status_code instr_fn(ExecutionState&)>
 const instruction* op(const instruction* instr, AdvancedExecutionState& state) noexcept
 {
     const auto status_code = instr_fn(state);
@@ -107,7 +107,7 @@ const instruction* op_invalid(const instruction*, AdvancedExecutionState& state)
     return state.exit(EVMC_INVALID_INSTRUCTION);
 }
 
-template <evmc_status_code status_code>
+template <ivmc_status_code status_code>
 const instruction* op_return(const instruction*, AdvancedExecutionState& state) noexcept
 {
     const auto offset = state.stack[0];
@@ -122,7 +122,7 @@ const instruction* op_return(const instruction*, AdvancedExecutionState& state) 
     return state.exit(status_code);
 }
 
-template <evmc_call_kind Kind, bool Static = false>
+template <ivmc_call_kind Kind, bool Static = false>
 const instruction* op_call(const instruction* instr, AdvancedExecutionState& state) noexcept
 {
     const auto gas_left_correction = state.current_block_cost - instr->arg.number;
@@ -138,7 +138,7 @@ const instruction* op_call(const instruction* instr, AdvancedExecutionState& sta
     return ++instr;
 }
 
-template <evmc_call_kind Kind>
+template <ivmc_call_kind Kind>
 const instruction* op_create(const instruction* instr, AdvancedExecutionState& state) noexcept
 {
     const auto gas_left_correction = state.current_block_cost - instr->arg.number;
@@ -313,7 +313,7 @@ constexpr std::array<instruction_exec_fn, 256> instruction_implementations = [](
 }();
 }  // namespace
 
-EVMC_EXPORT const op_table& get_op_table(evmc_revision rev) noexcept
+EVMC_EXPORT const op_table& get_op_table(ivmc_revision rev) noexcept
 {
     static constexpr auto op_tables = []() noexcept {
         std::array<op_table, EVMC_MAX_REVISION + 1> tables{};

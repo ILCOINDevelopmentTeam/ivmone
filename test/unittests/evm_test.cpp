@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "evm_fixture.hpp"
-#include <evmc/instructions.h>
+#include <ivmc/instructions.h>
 #include <evmone/limits.hpp>
 #include <intx/intx.hpp>
 #include <algorithm>
 #include <numeric>
 
-using namespace evmc::literals;
+using namespace ivmc::literals;
 using namespace intx;
 using evmone::test::evm;
 
@@ -98,7 +98,7 @@ TEST_P(evm, dup_stack_underflow)
 {
     for (int i = 0; i < 16; ++i)
     {
-        const auto op = evmc_opcode(OP_DUP1 + i);
+        const auto op = ivmc_opcode(OP_DUP1 + i);
         execute((i * push(0)) + op);
         EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
     }
@@ -800,8 +800,8 @@ TEST_P(evm, undefined_instructions)
 {
     for (auto i = 0; i <= EVMC_MAX_REVISION; ++i)
     {
-        auto r = evmc_revision(i);
-        auto names = evmc_get_instruction_names_table(r);
+        auto r = ivmc_revision(i);
+        auto names = ivmc_get_instruction_names_table(r);
 
         for (uint8_t opcode = 0; opcode <= 0xfe; ++opcode)
         {
@@ -819,7 +819,7 @@ TEST_P(evm, undefined_instruction_analysis_overflow)
 {
     rev = EVMC_PETERSBURG;
 
-    auto undefined_opcode = evmc_opcode(0x0c);
+    auto undefined_opcode = ivmc_opcode(0x0c);
     auto code = bytecode{undefined_opcode};
 
     execute(code);
@@ -851,7 +851,7 @@ TEST_P(evm, abort)
     for (auto r = 0; r <= EVMC_MAX_REVISION; ++r)
     {
         auto opcode = uint8_t{0xfe};
-        auto res = vm.execute(host, evmc_revision(r), {}, &opcode, sizeof(opcode));
+        auto res = vm.execute(host, ivmc_revision(r), {}, &opcode, sizeof(opcode));
         EXPECT_EQ(res.status_code, EVMC_INVALID_INSTRUCTION);
     }
 }
@@ -973,7 +973,7 @@ TEST_P(evm, reverse_16_stack_items)
 
 struct memory_access_opcode
 {
-    evmc_opcode opcode;
+    ivmc_opcode opcode;
     int memory_index_arg;
     int memory_size_arg;
 };
@@ -1023,8 +1023,8 @@ memory_access_params memory_access_test_cases[] = {
 TEST_P(evm, memory_access)
 {
     rev = EVMC_CONSTANTINOPLE;
-    auto metrics = evmc_get_instruction_metrics_table(rev);
-    auto names = evmc_get_instruction_names_table(rev);
+    auto metrics = ivmc_get_instruction_metrics_table(rev);
+    auto names = ivmc_get_instruction_names_table(rev);
 
     for (auto& p : memory_access_test_cases)
     {

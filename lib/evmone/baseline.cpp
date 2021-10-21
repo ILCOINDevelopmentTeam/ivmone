@@ -8,7 +8,7 @@
 #include "instructions.hpp"
 #include "instructions_op2fn.hpp"
 #include "vm.hpp"
-#include <evmc/instructions.h>
+#include <ivmc/instructions.h>
 #include <memory>
 
 namespace evmone::baseline
@@ -47,7 +47,7 @@ CodeAnalysis analyze(const uint8_t* code, size_t code_size)
 
 namespace
 {
-inline evmc_status_code check_requirements(
+inline ivmc_status_code check_requirements(
     const InstructionTable& instruction_table, ExecutionState& state, uint8_t op) noexcept
 {
     const auto metrics = instruction_table[op];
@@ -83,7 +83,7 @@ using SucceedingInstrFn = void(ExecutionState&) noexcept;
 static_assert(std::is_same_v<decltype(add), SucceedingInstrFn>);
 
 /// The signature of basic instructions which may fail.
-using MayFailInstrFn = evmc_status_code(ExecutionState&) noexcept;
+using MayFailInstrFn = ivmc_status_code(ExecutionState&) noexcept;
 static_assert(std::is_same_v<decltype(exp), MayFailInstrFn>);
 
 /// The signature of terminating instructions.
@@ -137,7 +137,7 @@ template <>
 }
 
 template <bool TracingEnabled>
-evmc_result execute(const VM& vm, ExecutionState& state, const CodeAnalysis& analysis) noexcept
+ivmc_result execute(const VM& vm, ExecutionState& state, const CodeAnalysis& analysis) noexcept
 {
     state.analysis.baseline = &analysis;  // Assign code analysis for instruction implementations.
 
@@ -333,7 +333,7 @@ exit:
     const auto gas_left =
         (state.status == EVMC_SUCCESS || state.status == EVMC_REVERT) ? state.gas_left : 0;
 
-    const auto result = evmc::make_result(state.status, gas_left,
+    const auto result = ivmc::make_result(state.status, gas_left,
         state.output_size != 0 ? &state.memory[state.output_offset] : nullptr, state.output_size);
 
     if constexpr (TracingEnabled)
@@ -343,7 +343,7 @@ exit:
 }
 }  // namespace
 
-evmc_result execute(const VM& vm, ExecutionState& state, const CodeAnalysis& analysis) noexcept
+ivmc_result execute(const VM& vm, ExecutionState& state, const CodeAnalysis& analysis) noexcept
 {
     if (INTX_UNLIKELY(vm.get_tracer() != nullptr))
         return execute<true>(vm, state, analysis);
@@ -351,8 +351,8 @@ evmc_result execute(const VM& vm, ExecutionState& state, const CodeAnalysis& ana
     return execute<false>(vm, state, analysis);
 }
 
-evmc_result execute(evmc_vm* c_vm, const evmc_host_interface* host, evmc_host_context* ctx,
-    evmc_revision rev, const evmc_message* msg, const uint8_t* code, size_t code_size) noexcept
+ivmc_result execute(ivmc_vm* c_vm, const ivmc_host_interface* host, ivmc_host_context* ctx,
+    ivmc_revision rev, const ivmc_message* msg, const uint8_t* code, size_t code_size) noexcept
 {
     auto vm = static_cast<VM*>(c_vm);
     const auto jumpdest_map = analyze(code, code_size);

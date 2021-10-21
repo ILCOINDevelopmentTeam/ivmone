@@ -337,11 +337,11 @@ jobs:
           command: |
             mkdir ~/coverage
             llvm-profdata merge *.profraw -o evmone.profdata
-            llvm-cov show lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/evmc -region-coverage-lt=100 -format=html > ~/coverage/missing.html
-            llvm-cov show lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/evmc -format=html > ~/coverage/full.html
+            llvm-cov show lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc -region-coverage-lt=100 -format=html > ~/coverage/missing.html
+            llvm-cov show lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc -format=html > ~/coverage/full.html
 
-            llvm-cov report lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/evmc > ~/coverage/report.txt
-            llvm-cov report lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/evmc -use-color
+            llvm-cov report lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc > ~/coverage/report.txt
+            llvm-cov report lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc -use-color
       - store_artifacts:
           path: ~/coverage
           destination: coverage

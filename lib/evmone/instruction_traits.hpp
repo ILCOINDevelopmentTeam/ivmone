@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/instructions.h>
+#include <ivmc/instructions.h>
 #include <array>
 #include <optional>
 
@@ -181,7 +181,7 @@ struct Traits
     /// The EVM revision in which the instruction has been defined. For instructions available in
     /// every EVM revision the value is ::EVMC_FRONTIER. For undefined instructions the value is not
     /// available.
-    std::optional<evmc_revision> since;
+    std::optional<ivmc_revision> since;
 };
 
 /// The global, EVM revision independent, table of traits of all known EVM instructions.

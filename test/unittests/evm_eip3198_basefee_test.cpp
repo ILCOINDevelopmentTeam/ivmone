@@ -7,7 +7,7 @@
 
 #include "evm_fixture.hpp"
 
-using namespace evmc::literals;
+using namespace ivmc::literals;
 using evmone::test::evm;
 
 TEST_P(evm, basefee_pre_london)
@@ -23,7 +23,7 @@ TEST_P(evm, basefee_nominal_case)
 {
     // https://eips.ethereum.org/EIPS/eip-3198#nominal-case
     rev = EVMC_LONDON;
-    host.tx_context.block_base_fee = evmc::bytes32{7};
+    host.tx_context.block_base_fee = ivmc::bytes32{7};
 
     execute(bytecode{} + OP_BASEFEE + OP_STOP);
     EXPECT_GAS_USED(EVMC_SUCCESS, 2);

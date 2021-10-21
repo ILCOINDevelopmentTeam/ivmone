@@ -8,7 +8,7 @@
 
 namespace evmone::baseline
 {
-const InstructionTable& get_baseline_instruction_table(evmc_revision rev) noexcept
+const InstructionTable& get_baseline_instruction_table(ivmc_revision rev) noexcept
 {
     static constexpr auto instruction_tables = []() noexcept {
         std::array<InstructionTable, EVMC_MAX_REVISION + 1> tables{};

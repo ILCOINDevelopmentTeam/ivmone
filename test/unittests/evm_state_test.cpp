@@ -7,7 +7,7 @@
 
 #include "evm_fixture.hpp"
 
-using namespace evmc::literals;
+using namespace ivmc::literals;
 using evmone::test::evm;
 
 TEST_P(evm, code)
@@ -113,7 +113,7 @@ TEST_P(evm, sstore_cost)
 {
     auto& storage = host.accounts[msg.recipient].storage;
 
-    auto v1 = evmc::bytes32{};
+    auto v1 = ivmc::bytes32{};
     v1.bytes[31] = 1;
 
     auto revs = {EVMC_BYZANTIUM, EVMC_CONSTANTINOPLE, EVMC_PETERSBURG, EVMC_ISTANBUL};
@@ -411,7 +411,7 @@ TEST_P(evm, selfdestruct_with_balance)
 {
     constexpr auto beneficiary = 0x00000000000000000000000000000000000000be_address;
     const auto code = push({beneficiary.bytes, sizeof(beneficiary)}) + OP_SELFDESTRUCT;
-    msg.recipient = evmc_address{{0x5e}};
+    msg.recipient = ivmc_address{{0x5e}};
 
 
     host.accounts[msg.recipient].set_balance(0);
@@ -613,7 +613,7 @@ TEST_P(evm, blockhash)
 
 TEST_P(evm, extcode)
 {
-    auto addr = evmc_address{};
+    auto addr = ivmc_address{};
     std::fill(std::begin(addr.bytes), std::end(addr.bytes), uint8_t{0xff});
     addr.bytes[19]--;
 
@@ -723,7 +723,7 @@ TEST_P(evm, extcodecopy_nonzero_index)
 
 TEST_P(evm, extcodecopy_fill_tail)
 {
-    auto addr = evmc_address{};
+    auto addr = ivmc_address{};
     addr.bytes[19] = 0xa;
 
     auto& extcode = host.accounts[addr].code;

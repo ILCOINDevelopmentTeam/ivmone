@@ -21,9 +21,9 @@ static_assert(!std::is_copy_assignable<evmone::AdvancedExecutionState>::value);
 
 TEST(execution_state, construct)
 {
-    evmc_message msg{};
+    ivmc_message msg{};
     msg.gas = -1;
-    const evmc_host_interface host_interface{};
+    const ivmc_host_interface host_interface{};
     const uint8_t code[]{0x0f};
     const evmone::ExecutionState st{
         msg, EVMC_MAX_REVISION, host_interface, nullptr, code, std::size(code)};
@@ -80,7 +80,7 @@ TEST(execution_state, default_construct_advanced)
 
 TEST(execution_state, reset_advanced)
 {
-    const evmc_message msg{};
+    const ivmc_message msg{};
     const uint8_t code[]{0xff};
     evmone::AdvancedCodeAnalysis analysis;
 
@@ -113,9 +113,9 @@ TEST(execution_state, reset_advanced)
     EXPECT_EQ(st.analysis.advanced, &analysis);
 
     {
-        evmc_message msg2{};
+        ivmc_message msg2{};
         msg2.gas = 13;
-        const evmc_host_interface host_interface2{};
+        const ivmc_host_interface host_interface2{};
         const uint8_t code2[]{0x80, 0x81};
 
         st.reset(msg2, EVMC_HOMESTEAD, host_interface2, nullptr, code2, std::size(code2));

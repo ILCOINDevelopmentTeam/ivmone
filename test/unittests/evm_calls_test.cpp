@@ -6,7 +6,7 @@
 
 #include "evm_fixture.hpp"
 
-using namespace evmc::literals;
+using namespace ivmc::literals;
 using evmone::test::evm;
 
 TEST_P(evm, delegatecall)
@@ -80,7 +80,7 @@ TEST_P(evm, create)
     EXPECT_EQ(gas_used, 115816);
     EXPECT_EQ(result.status_code, EVMC_SUCCESS);
 
-    auto key = evmc_bytes32{};
+    auto key = ivmc_bytes32{};
     key.bytes[31] = 1;
     EXPECT_EQ(account.storage[key].value.bytes[22], 0xcc);
 
@@ -127,7 +127,7 @@ TEST_P(evm, create2)
     EXPECT_EQ(call_msg.gas, 263775);
     EXPECT_EQ(call_msg.kind, EVMC_CREATE2);
 
-    auto key = evmc_bytes32{};
+    auto key = ivmc_bytes32{};
     key.bytes[31] = 1;
     EXPECT_EQ(account.storage[key].value.bytes[22], 0xc2);
 
@@ -254,7 +254,7 @@ TEST_P(evm, call_with_value)
 
 TEST_P(evm, call_with_value_depth_limit)
 {
-    auto call_dst = evmc_address{};
+    auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
 
@@ -288,7 +288,7 @@ TEST_P(evm, call_output)
     host.accounts[{}].set_balance(1);
     host.call_result.output_data = call_output;
     host.call_result.output_size = sizeof(call_output);
-    host.call_result.release = [](const evmc_result* r) {
+    host.call_result.release = [](const ivmc_result* r) {
         result_is_correct = r->output_size == sizeof(call_output) && r->output_data == call_output;
     };
 
@@ -322,7 +322,7 @@ TEST_P(evm, call_output)
 TEST_P(evm, call_high_gas)
 {
     rev = EVMC_HOMESTEAD;
-    auto call_dst = evmc_address{};
+    auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
 
@@ -453,7 +453,7 @@ TEST_P(evm, callcode_new_account_create)
 TEST_P(evm, call_then_oog)
 {
     // Performs a CALL then OOG in the same code block.
-    auto call_dst = evmc_address{};
+    auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
     host.call_result.status_code = EVMC_FAILURE;
@@ -490,7 +490,7 @@ TEST_P(evm, callcode_then_oog)
 TEST_P(evm, delegatecall_then_oog)
 {
     // Performs a CALL then OOG in the same code block.
-    auto call_dst = evmc_address{};
+    auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
     host.call_result.status_code = EVMC_FAILURE;
@@ -511,7 +511,7 @@ TEST_P(evm, delegatecall_then_oog)
 TEST_P(evm, staticcall_then_oog)
 {
     // Performs a STATICCALL then OOG in the same code block.
-    auto call_dst = evmc_address{};
+    auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
     host.call_result.status_code = EVMC_FAILURE;

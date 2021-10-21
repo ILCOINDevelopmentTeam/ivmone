@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
+#include <ivmc/ivmc.hpp>
 #include <intx/intx.hpp>
 #include <string>
 #include <vector>
@@ -148,16 +148,16 @@ struct ExecutionState
     int64_t gas_left = 0;
     Stack stack;
     Memory memory;
-    const evmc_message* msg = nullptr;
-    evmc::HostContext host;
-    evmc_revision rev = {};
+    const ivmc_message* msg = nullptr;
+    ivmc::HostContext host;
+    ivmc_revision rev = {};
     bytes return_data;
 
     /// Reference to original EVM code.
     /// TODO: Code should be accessed via code analysis only and this should be removed.
     bytes_view code;
 
-    evmc_status_code status = EVMC_SUCCESS;
+    ivmc_status_code status = EVMC_SUCCESS;
     size_t output_offset = 0;
     size_t output_size = 0;
 
@@ -171,8 +171,8 @@ struct ExecutionState
 
     ExecutionState() noexcept = default;
 
-    ExecutionState(const evmc_message& message, evmc_revision revision,
-        const evmc_host_interface& host_interface, evmc_host_context* host_ctx,
+    ExecutionState(const ivmc_message& message, ivmc_revision revision,
+        const ivmc_host_interface& host_interface, ivmc_host_context* host_ctx,
         const uint8_t* code_ptr, size_t code_size) noexcept
       : gas_left{message.gas},
         msg{&message},
@@ -182,8 +182,8 @@ struct ExecutionState
     {}
 
     /// Resets the contents of the ExecutionState so that it could be reused.
-    void reset(const evmc_message& message, evmc_revision revision,
-        const evmc_host_interface& host_interface, evmc_host_context* host_ctx,
+    void reset(const ivmc_message& message, ivmc_revision revision,
+        const ivmc_host_interface& host_interface, ivmc_host_context* host_ctx,
         const uint8_t* code_ptr, size_t code_size) noexcept
     {
         gas_left = message.gas;

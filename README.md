@@ -139,7 +139,7 @@ Licensed under the [Apache License, Version 2.0].
 [codecov]: https://codecov.io/gh/ethereum/evmone/
 [Apache License, Version 2.0]: LICENSE
 [ethereum]: https://ethereum.org
-[EVMC]: https://github.com/ethereum/evmc
+[EVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
 [Ewasm]: https://github.com/ewasm
 [intx]: https://github.com/chfast/intx
 [ethash]: https://github.com/chfast/ethash

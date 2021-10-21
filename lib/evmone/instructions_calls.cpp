@@ -6,11 +6,11 @@
 
 namespace evmone
 {
-template <evmc_call_kind Kind, bool Static>
-evmc_status_code call(ExecutionState& state) noexcept
+template <ivmc_call_kind Kind, bool Static>
+ivmc_status_code call(ExecutionState& state) noexcept
 {
     const auto gas = state.stack.pop();
-    const auto dst = intx::be::trunc<evmc::address>(state.stack.pop());
+    const auto dst = intx::be::trunc<ivmc::address>(state.stack.pop());
     const auto value = (Static || Kind == EVMC_DELEGATECALL) ? 0 : state.stack.pop();
     const auto has_value = value != 0;
     const auto input_offset = state.stack.pop();
@@ -32,7 +32,7 @@ evmc_status_code call(ExecutionState& state) noexcept
     if (!check_memory(state, output_offset, output_size))
         return EVMC_OUT_OF_GAS;
 
-    auto msg = evmc_message{};
+    auto msg = ivmc_message{};
     msg.kind = Kind;
     msg.flags = Static ? uint32_t{EVMC_STATIC} : state.msg->flags;
     msg.depth = state.msg->depth + 1;
@@ -40,7 +40,7 @@ evmc_status_code call(ExecutionState& state) noexcept
     msg.code_address = dst;
     msg.sender = (Kind == EVMC_DELEGATECALL) ? state.msg->sender : state.msg->recipient;
     msg.value =
-        (Kind == EVMC_DELEGATECALL) ? state.msg->value : intx::be::store<evmc::uint256be>(value);
+        (Kind == EVMC_DELEGATECALL) ? state.msg->value : intx::be::store<ivmc::uint256be>(value);
 
     if (size_t(input_size) > 0)
     {
@@ -97,14 +97,14 @@ evmc_status_code call(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-template evmc_status_code call<EVMC_CALL>(ExecutionState& state) noexcept;
-template evmc_status_code call<EVMC_CALL, true>(ExecutionState& state) noexcept;
-template evmc_status_code call<EVMC_DELEGATECALL>(ExecutionState& state) noexcept;
-template evmc_status_code call<EVMC_CALLCODE>(ExecutionState& state) noexcept;
+template ivmc_status_code call<EVMC_CALL>(ExecutionState& state) noexcept;
+template ivmc_status_code call<EVMC_CALL, true>(ExecutionState& state) noexcept;
+template ivmc_status_code call<EVMC_DELEGATECALL>(ExecutionState& state) noexcept;
+template ivmc_status_code call<EVMC_CALLCODE>(ExecutionState& state) noexcept;
 
 
-template <evmc_call_kind Kind>
-evmc_status_code create(ExecutionState& state) noexcept
+template <ivmc_call_kind Kind>
+ivmc_status_code create(ExecutionState& state) noexcept
 {
     if (state.msg->flags & EVMC_STATIC)
         return EVMC_STATIC_MODE_VIOLATION;
@@ -135,7 +135,7 @@ evmc_status_code create(ExecutionState& state) noexcept
         intx::be::load<uint256>(state.host.get_balance(state.msg->recipient)) < endowment)
         return EVMC_SUCCESS;
 
-    auto msg = evmc_message{};
+    auto msg = ivmc_message{};
     msg.gas = state.gas_left;
     if (state.rev >= EVMC_TANGERINE_WHISTLE)
         msg.gas = msg.gas - msg.gas / 64;
@@ -148,8 +148,8 @@ evmc_status_code create(ExecutionState& state) noexcept
     }
     msg.sender = state.msg->recipient;
     msg.depth = state.msg->depth + 1;
-    msg.create2_salt = intx::be::store<evmc::bytes32>(salt);
-    msg.value = intx::be::store<evmc::uint256be>(endowment);
+    msg.create2_salt = intx::be::store<ivmc::bytes32>(salt);
+    msg.value = intx::be::store<ivmc::uint256be>(endowment);
 
     const auto result = state.host.call(msg);
     state.gas_left -= msg.gas - result.gas_left;
@@ -161,6 +161,6 @@ evmc_status_code create(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-template evmc_status_code create<EVMC_CREATE>(ExecutionState& state) noexcept;
-template evmc_status_code create<EVMC_CREATE2>(ExecutionState& state) noexcept;
+template ivmc_status_code create<EVMC_CREATE>(ExecutionState& state) noexcept;
+template ivmc_status_code create<EVMC_CREATE2>(ExecutionState& state) noexcept;
 }  // namespace evmone

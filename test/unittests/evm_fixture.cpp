@@ -9,10 +9,10 @@ namespace evmone::test
 {
 namespace
 {
-evmc::VM advanced_vm{evmc_create_evmone(), {{"O", "2"}}};
-evmc::VM baseline_vm{evmc_create_evmone(), {{"O", "0"}}};
+ivmc::VM advanced_vm{ivmc_create_evmone(), {{"O", "2"}}};
+ivmc::VM baseline_vm{ivmc_create_evmone(), {{"O", "0"}}};
 
-const char* print_vm_name(const testing::TestParamInfo<evmc::VM*>& info) noexcept
+const char* print_vm_name(const testing::TestParamInfo<ivmc::VM*>& info) noexcept
 {
     if (info.param == &advanced_vm)
         return "advanced";

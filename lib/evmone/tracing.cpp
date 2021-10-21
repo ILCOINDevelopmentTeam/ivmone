@@ -5,7 +5,7 @@
 #include "tracing.hpp"
 #include "execution_state.hpp"
 #include "instruction_traits.hpp"
-#include <evmc/hex.hpp>
+#include <ivmc/hex.hpp>
 #include <stack>
 
 namespace evmone
@@ -15,7 +15,7 @@ namespace
 std::string get_name(const char* const* names, uint8_t opcode)
 {
     const auto name = names[opcode];
-    return (name != nullptr) ? name : "0x" + evmc::hex(opcode);
+    return (name != nullptr) ? name : "0x" + ivmc::hex(opcode);
 }
 
 /// @see create_histogram_tracer()
@@ -37,9 +37,9 @@ class HistogramTracer : public Tracer
     std::ostream& m_out;
 
     void on_execution_start(
-        evmc_revision rev, const evmc_message& msg, bytes_view code) noexcept override
+        ivmc_revision rev, const ivmc_message& msg, bytes_view code) noexcept override
     {
-        m_contexts.emplace(msg.depth, code.data(), evmc_get_instruction_names_table(rev));
+        m_contexts.emplace(msg.depth, code.data(), ivmc_get_instruction_names_table(rev));
     }
 
     void on_instruction_start(uint32_t pc, const ExecutionState& /*state*/) noexcept override
@@ -48,7 +48,7 @@ class HistogramTracer : public Tracer
         ++ctx.counts[ctx.code[pc]];
     }
 
-    void on_execution_end(const evmc_result& /*result*/) noexcept override
+    void on_execution_end(const ivmc_result& /*result*/) noexcept override
     {
         const auto& ctx = m_contexts.top();
         const auto names = ctx.opcode_names;
@@ -96,10 +96,10 @@ class InstructionTracer : public Tracer
     }
 
     void on_execution_start(
-        evmc_revision rev, const evmc_message& msg, bytes_view code) noexcept override
+        ivmc_revision rev, const ivmc_message& msg, bytes_view code) noexcept override
     {
         if (m_contexts.empty())
-            m_opcode_names = evmc_get_instruction_names_table(rev);
+            m_opcode_names = ivmc_get_instruction_names_table(rev);
         m_contexts.emplace(code.data(), msg.gas);
 
         m_out << "{";
@@ -121,14 +121,14 @@ class InstructionTracer : public Tracer
         m_out << R"(,"gas":)" << state.gas_left;
         output_stack(state.stack);
 
-        // Full memory can be dumped as evmc::hex({state.memory.data(), state.memory.size()}),
+        // Full memory can be dumped as ivmc::hex({state.memory.data(), state.memory.size()}),
         // but this should not be done by default. Adding --tracing=+memory option would be nice.
         m_out << R"(,"memorySize":)" << state.memory.size();
 
         m_out << "}\n";
     }
 
-    void on_execution_end(const evmc_result& result) noexcept override
+    void on_execution_end(const ivmc_result& result) noexcept override
     {
         const auto& ctx = m_contexts.top();
 
@@ -140,7 +140,7 @@ class InstructionTracer : public Tracer
             m_out << '"' << result.status_code << '"';
         m_out << R"(,"gas":)" << result.gas_left;
         m_out << R"(,"gasUsed":)" << (ctx.start_gas - result.gas_left);
-        m_out << R"(,"output":")" << evmc::hex({result.output_data, result.output_size}) << '"';
+        m_out << R"(,"output":")" << ivmc::hex({result.output_data, result.output_size}) << '"';
         m_out << "}\n";
 
         m_contexts.pop();

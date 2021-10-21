@@ -12,11 +12,11 @@ namespace evmone
 {
 using code_iterator = const uint8_t*;
 
-/// A wrapper for evmc_status_code to indicate that an instruction
+/// A wrapper for ivmc_status_code to indicate that an instruction
 /// unconditionally terminates execution.
 struct StopToken
 {
-    const evmc_status_code status;  ///< The status code execution terminates with.
+    const ivmc_status_code status;  ///< The status code execution terminates with.
 };
 
 constexpr auto max_buffer_size = std::numeric_limits<uint32_t>::max();
@@ -152,7 +152,7 @@ inline void mulmod(ExecutionState& state) noexcept
     m = m != 0 ? intx::mulmod(x, y, m) : 0;
 }
 
-inline evmc_status_code exp(ExecutionState& state) noexcept
+inline ivmc_status_code exp(ExecutionState& state) noexcept
 {
     const auto base = state.stack.pop();
     auto& exponent = state.stack.top();
@@ -276,7 +276,7 @@ inline void sar(ExecutionState& state) noexcept
 }
 
 
-inline evmc_status_code keccak256(ExecutionState& state) noexcept
+inline ivmc_status_code keccak256(ExecutionState& state) noexcept
 {
     const auto index = state.stack.pop();
     auto& size = state.stack.top();
@@ -302,10 +302,10 @@ inline void address(ExecutionState& state) noexcept
     state.stack.push(intx::be::load<uint256>(state.msg->recipient));
 }
 
-inline evmc_status_code balance(ExecutionState& state) noexcept
+inline ivmc_status_code balance(ExecutionState& state) noexcept
 {
     auto& x = state.stack.top();
-    const auto addr = intx::be::trunc<evmc::address>(x);
+    const auto addr = intx::be::trunc<ivmc::address>(x);
 
     if (state.rev >= EVMC_BERLIN && state.host.access_account(addr) == EVMC_ACCESS_COLD)
     {
@@ -356,7 +356,7 @@ inline void calldatasize(ExecutionState& state) noexcept
     state.stack.push(state.msg->input_size);
 }
 
-inline evmc_status_code calldatacopy(ExecutionState& state) noexcept
+inline ivmc_status_code calldatacopy(ExecutionState& state) noexcept
 {
     const auto mem_index = state.stack.pop();
     const auto input_index = state.stack.pop();
@@ -389,7 +389,7 @@ inline void codesize(ExecutionState& state) noexcept
     state.stack.push(state.code.size());
 }
 
-inline evmc_status_code codecopy(ExecutionState& state) noexcept
+inline ivmc_status_code codecopy(ExecutionState& state) noexcept
 {
     // TODO: Similar to calldatacopy().
 
@@ -431,10 +431,10 @@ inline void basefee(ExecutionState& state) noexcept
     state.stack.push(intx::be::load<uint256>(state.host.get_tx_context().block_base_fee));
 }
 
-inline evmc_status_code extcodesize(ExecutionState& state) noexcept
+inline ivmc_status_code extcodesize(ExecutionState& state) noexcept
 {
     auto& x = state.stack.top();
-    const auto addr = intx::be::trunc<evmc::address>(x);
+    const auto addr = intx::be::trunc<ivmc::address>(x);
 
     if (state.rev >= EVMC_BERLIN && state.host.access_account(addr) == EVMC_ACCESS_COLD)
     {
@@ -446,9 +446,9 @@ inline evmc_status_code extcodesize(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-inline evmc_status_code extcodecopy(ExecutionState& state) noexcept
+inline ivmc_status_code extcodecopy(ExecutionState& state) noexcept
 {
-    const auto addr = intx::be::trunc<evmc::address>(state.stack.pop());
+    const auto addr = intx::be::trunc<ivmc::address>(state.stack.pop());
     const auto mem_index = state.stack.pop();
     const auto input_index = state.stack.pop();
     const auto size = state.stack.pop();
@@ -485,7 +485,7 @@ inline void returndatasize(ExecutionState& state) noexcept
     state.stack.push(state.return_data.size());
 }
 
-inline evmc_status_code returndatacopy(ExecutionState& state) noexcept
+inline ivmc_status_code returndatacopy(ExecutionState& state) noexcept
 {
     const auto mem_index = state.stack.pop();
     const auto input_index = state.stack.pop();
@@ -514,10 +514,10 @@ inline evmc_status_code returndatacopy(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-inline evmc_status_code extcodehash(ExecutionState& state) noexcept
+inline ivmc_status_code extcodehash(ExecutionState& state) noexcept
 {
     auto& x = state.stack.top();
-    const auto addr = intx::be::trunc<evmc::address>(x);
+    const auto addr = intx::be::trunc<ivmc::address>(x);
 
     if (state.rev >= EVMC_BERLIN && state.host.access_account(addr) == EVMC_ACCESS_COLD)
     {
@@ -538,7 +538,7 @@ inline void blockhash(ExecutionState& state) noexcept
     const auto lower_bound = std::max(upper_bound - 256, decltype(upper_bound){0});
     const auto n = static_cast<int64_t>(number);
     const auto header =
-        (number < upper_bound && n >= lower_bound) ? state.host.get_block_hash(n) : evmc::bytes32{};
+        (number < upper_bound && n >= lower_bound) ? state.host.get_block_hash(n) : ivmc::bytes32{};
     number = intx::be::load<uint256>(header);
 }
 
@@ -589,7 +589,7 @@ inline void pop(ExecutionState& state) noexcept
     state.stack.pop();
 }
 
-inline evmc_status_code mload(ExecutionState& state) noexcept
+inline ivmc_status_code mload(ExecutionState& state) noexcept
 {
     auto& index = state.stack.top();
 
@@ -600,7 +600,7 @@ inline evmc_status_code mload(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-inline evmc_status_code mstore(ExecutionState& state) noexcept
+inline ivmc_status_code mstore(ExecutionState& state) noexcept
 {
     const auto index = state.stack.pop();
     const auto value = state.stack.pop();
@@ -612,7 +612,7 @@ inline evmc_status_code mstore(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-inline evmc_status_code mstore8(ExecutionState& state) noexcept
+inline ivmc_status_code mstore8(ExecutionState& state) noexcept
 {
     const auto index = state.stack.pop();
     const auto value = state.stack.pop();
@@ -624,10 +624,10 @@ inline evmc_status_code mstore8(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-inline evmc_status_code sload(ExecutionState& state) noexcept
+inline ivmc_status_code sload(ExecutionState& state) noexcept
 {
     auto& x = state.stack.top();
-    const auto key = intx::be::store<evmc::bytes32>(x);
+    const auto key = intx::be::store<ivmc::bytes32>(x);
 
     if (state.rev >= EVMC_BERLIN &&
         state.host.access_storage(state.msg->recipient, key) == EVMC_ACCESS_COLD)
@@ -645,7 +645,7 @@ inline evmc_status_code sload(ExecutionState& state) noexcept
     return EVMC_SUCCESS;
 }
 
-inline evmc_status_code sstore(ExecutionState& state) noexcept
+inline ivmc_status_code sstore(ExecutionState& state) noexcept
 {
     if (state.msg->flags & EVMC_STATIC)
         return EVMC_STATIC_MODE_VIOLATION;
@@ -653,8 +653,8 @@ inline evmc_status_code sstore(ExecutionState& state) noexcept
     if (state.rev >= EVMC_ISTANBUL && state.gas_left <= 2300)
         return EVMC_OUT_OF_GAS;
 
-    const auto key = intx::be::store<evmc::bytes32>(state.stack.pop());
-    const auto value = intx::be::store<evmc::bytes32>(state.stack.pop());
+    const auto key = intx::be::store<ivmc::bytes32>(state.stack.pop());
+    const auto value = intx::be::store<ivmc::bytes32>(state.stack.pop());
 
     int cost = 0;
     if (state.rev >= EVMC_BERLIN &&
@@ -772,7 +772,7 @@ inline void swap(ExecutionState& state) noexcept
 
 
 template <size_t NumTopics>
-inline evmc_status_code log(ExecutionState& state) noexcept
+inline ivmc_status_code log(ExecutionState& state) noexcept
 {
     static_assert(NumTopics >= 0 && NumTopics <= 4);
 
@@ -792,9 +792,9 @@ inline evmc_status_code log(ExecutionState& state) noexcept
     if ((state.gas_left -= cost) < 0)
         return EVMC_OUT_OF_GAS;
 
-    std::array<evmc::bytes32, NumTopics> topics;
+    std::array<ivmc::bytes32, NumTopics> topics;
     for (auto& topic : topics)
-        topic = intx::be::store<evmc::bytes32>(state.stack.pop());
+        topic = intx::be::store<ivmc::bytes32>(state.stack.pop());
 
     const auto data = s != 0 ? &state.memory[o] : nullptr;
     state.host.emit_log(state.msg->recipient, data, s, topics.data(), NumTopics);
@@ -802,14 +802,14 @@ inline evmc_status_code log(ExecutionState& state) noexcept
 }
 
 
-template <evmc_call_kind Kind, bool Static = false>
-evmc_status_code call(ExecutionState& state) noexcept;
+template <ivmc_call_kind Kind, bool Static = false>
+ivmc_status_code call(ExecutionState& state) noexcept;
 
-template <evmc_call_kind Kind>
-evmc_status_code create(ExecutionState& state) noexcept;
+template <ivmc_call_kind Kind>
+ivmc_status_code create(ExecutionState& state) noexcept;
 
 
-template <evmc_status_code StatusCode>
+template <ivmc_status_code StatusCode>
 inline StopToken return_(ExecutionState& state) noexcept
 {
     const auto offset = state.stack[0];
@@ -833,7 +833,7 @@ inline StopToken selfdestruct(ExecutionState& state) noexcept
     if (state.msg->flags & EVMC_STATIC)
         return {EVMC_STATIC_MODE_VIOLATION};
 
-    const auto beneficiary = intx::be::trunc<evmc::address>(state.stack[0]);
+    const auto beneficiary = intx::be::trunc<ivmc::address>(state.stack[0]);
 
     if (state.rev >= EVMC_BERLIN && state.host.access_account(beneficiary) == EVMC_ACCESS_COLD)
     {

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "dump.hpp"
-#include <evmc/instructions.h>
+#include <ivmc/instructions.h>
 #include <evmone/analysis.hpp>
 #include <test/utils/utils.hpp>
 #include <iomanip>
@@ -13,8 +13,8 @@ void dump(const evmone::AdvancedCodeAnalysis& analysis)
 {
     using namespace evmone;
 
-    auto names = evmc_get_instruction_names_table(EVMC_BYZANTIUM);
-    auto metrics = evmc_get_instruction_metrics_table(EVMC_BYZANTIUM);
+    auto names = ivmc_get_instruction_names_table(EVMC_BYZANTIUM);
+    auto metrics = ivmc_get_instruction_metrics_table(EVMC_BYZANTIUM);
 
     const block_info* block = nullptr;
     for (size_t i = 0; i < analysis.instrs.size(); ++i)

@@ -5,9 +5,9 @@
 
 #include "execution_state.hpp"
 #include "limits.hpp"
-#include <evmc/evmc.hpp>
-#include <evmc/instructions.h>
-#include <evmc/utils.h>
+#include <ivmc/ivmc.hpp>
+#include <ivmc/instructions.h>
+#include <ivmc/utils.h>
 #include <intx/intx.hpp>
 #include <array>
 #include <cstdint>
@@ -53,15 +53,15 @@ struct AdvancedExecutionState : ExecutionState
     using ExecutionState::ExecutionState;
 
     /// Terminates the execution with the given status code.
-    const instruction* exit(evmc_status_code status_code) noexcept
+    const instruction* exit(ivmc_status_code status_code) noexcept
     {
         status = status_code;
         return nullptr;
     }
 
     /// Resets the contents of the execution_state so that it could be reused.
-    void reset(const evmc_message& message, evmc_revision revision,
-        const evmc_host_interface& host_interface, evmc_host_context* host_ctx,
+    void reset(const ivmc_message& message, ivmc_revision revision,
+        const ivmc_host_interface& host_interface, ivmc_host_context* host_ctx,
         const uint8_t* code_ptr, size_t code_size) noexcept
     {
         ExecutionState::reset(message, revision, host_interface, host_ctx, code_ptr, code_size);
@@ -144,8 +144,8 @@ inline int find_jumpdest(const AdvancedCodeAnalysis& analysis, int offset) noexc
 }
 
 EVMC_EXPORT AdvancedCodeAnalysis analyze(
-    evmc_revision rev, const uint8_t* code, size_t code_size) noexcept;
+    ivmc_revision rev, const uint8_t* code, size_t code_size) noexcept;
 
-EVMC_EXPORT const op_table& get_op_table(evmc_revision rev) noexcept;
+EVMC_EXPORT const op_table& get_op_table(ivmc_revision rev) noexcept;
 
 }  // namespace evmone

@@ -3,12 +3,12 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/hex.hpp>
+#include <ivmc/hex.hpp>
 
-using evmc::bytes;
-using evmc::bytes_view;
-using evmc::from_hex;
-using evmc::hex;
+using ivmc::bytes;
+using ivmc::bytes_view;
+using ivmc::from_hex;
+using ivmc::hex;
 
 /// Decodes the hexx encoded string.
 ///

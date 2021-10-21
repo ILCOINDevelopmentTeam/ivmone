@@ -5,8 +5,8 @@
 #include "helpers.hpp"
 #include "synthetic_benchmarks.hpp"
 #include <benchmark/benchmark.h>
-#include <evmc/evmc.hpp>
-#include <evmc/loader.h>
+#include <ivmc/ivmc.hpp>
+#include <ivmc/loader.h>
 #include <evmone/evmone.h>
 #include <fstream>
 #include <iostream>
@@ -25,7 +25,7 @@ using namespace benchmark;
 
 namespace evmone::test
 {
-std::map<std::string_view, evmc::VM> registered_vms;
+std::map<std::string_view, ivmc::VM> registered_vms;
 
 namespace
 {
@@ -159,8 +159,8 @@ std::vector<BenchmarkCase> load_benchmarks_from_dir(
 
 void register_benchmarks(const std::vector<BenchmarkCase>& benchmark_cases)
 {
-    evmc::VM* advanced_vm = nullptr;
-    evmc::VM* baseline_vm = nullptr;
+    ivmc::VM* advanced_vm = nullptr;
+    ivmc::VM* baseline_vm = nullptr;
     if (const auto it = registered_vms.find("advanced"); it != registered_vms.end())
         advanced_vm = &it->second;
     if (const auto it = registered_vms.find("baseline"); it != registered_vms.end())
@@ -208,7 +208,7 @@ void register_benchmarks(const std::vector<BenchmarkCase>& benchmark_cases)
             {
                 const auto name = std::string{vm_name} + "/total/" + case_name;
                 RegisterBenchmark(name.c_str(), [&vm = vm, &b, &input](State& state) {
-                    bench_evmc_execute(state, vm, b.code, input.input, input.expected_output);
+                    bench_ivmc_execute(state, vm, b.code, input.input, input.expected_output);
                 })->Unit(kMicrosecond);
             }
         }
@@ -228,7 +228,7 @@ constexpr auto cli_parsing_error = -3;
 ///    Uses evmone VMs, only synthetic benchmarks are available.
 /// 2: evmone-bench benchmarks_dir
 ///    Uses evmone VMs, loads all benchmarks from benchmarks_dir.
-/// 3: evmone-bench evmc_config benchmarks_dir
+/// 3: evmone-bench ivmc_config benchmarks_dir
 ///    The same as (2) but loads additional custom EVMC VM.
 /// 4: evmone-bench code_hex_file input_hex expected_output_hex.
 ///    Uses evmone VMs, registers custom benchmark with the code from the given file,
@@ -237,7 +237,7 @@ constexpr auto cli_parsing_error = -3;
 std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
 {
     // Arguments' placeholders:
-    std::string evmc_config;
+    std::string ivmc_config;
     std::string benchmarks_dir;
     std::string code_hex_file;
     std::string input_hex;
@@ -252,7 +252,7 @@ std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
         benchmarks_dir = argv[1];
         break;
     case 3:
-        evmc_config = argv[1];
+        ivmc_config = argv[1];
         benchmarks_dir = argv[2];
         break;
     case 4:
@@ -265,21 +265,21 @@ std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
         return {cli_parsing_error, {}};
     }
 
-    if (!evmc_config.empty())
+    if (!ivmc_config.empty())
     {
-        auto ec = evmc_loader_error_code{};
-        registered_vms["external"] = evmc::VM{evmc_load_and_configure(evmc_config.c_str(), &ec)};
+        auto ec = ivmc_loader_error_code{};
+        registered_vms["external"] = ivmc::VM{ivmc_load_and_configure(ivmc_config.c_str(), &ec)};
 
         if (ec != EVMC_LOADER_SUCCESS)
         {
-            if (const auto error = evmc_last_error_msg())
+            if (const auto error = ivmc_last_error_msg())
                 std::cerr << "EVMC loading error: " << error << "\n";
             else
                 std::cerr << "EVMC loading error " << ec << "\n";
             return {static_cast<int>(ec), {}};
         }
 
-        std::cout << "External VM: " << evmc_config << "\n";
+        std::cout << "External VM: " << ivmc_config << "\n";
     }
 
     if (!benchmarks_dir.empty())
@@ -320,8 +320,8 @@ int main(int argc, char** argv)
         if (ec != 0)
             return ec;
 
-        registered_vms["advanced"] = evmc::VM{evmc_create_evmone(), {{"O", "2"}}};
-        registered_vms["baseline"] = evmc::VM{evmc_create_evmone(), {{"O", "0"}}};
+        registered_vms["advanced"] = ivmc::VM{ivmc_create_evmone(), {{"O", "2"}}};
+        registered_vms["baseline"] = ivmc::VM{ivmc_create_evmone(), {{"O", "0"}}};
         register_benchmarks(benchmark_cases);
         register_synthetic_benchmarks();
         RunSpecifiedBenchmarks();

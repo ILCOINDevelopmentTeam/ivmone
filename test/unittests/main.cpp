@@ -3,18 +3,18 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "vm_loader.hpp"
-#include <evmc/loader.h>
+#include <ivmc/loader.h>
 #include <gtest/gtest.h>
 #include <iostream>
 #include <string>
 #include <vector>
 
 /// The loaded EVMC module.
-static evmc::VM evmc_module;
+static ivmc::VM ivmc_module;
 
-evmc::VM& get_vm() noexcept
+ivmc::VM& get_vm() noexcept
 {
-    return evmc_module;
+    return ivmc_module;
 }
 
 /// Simple and copy&paste distributable CLI parser.
@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
         auto cli = cli_parser{"EVM Test", PROJECT_VERSION,
             "Testing tool for EVMC-compatible Ethereum Virtual Machine implementations.\n"
             "Powered by the evmone project.\n\n"
-            "EVMC:   https://github.com/ethereum/evmc\n"
+            "EVMC:   https://github.com/ILCOINDevelopmentTeam/ivmc\n"
             "evmone: https://github.com/ethereum/evmone",
             {"MODULE"}};
         cli.set_preprocessor(testing::InitGoogleTest);
@@ -155,20 +155,20 @@ int main(int argc, char* argv[])
         if (const auto error_code = cli.parse(argc, argv, std::cout, std::cerr); error_code <= 0)
             return error_code;
 
-        const auto& evmc_config = cli.arguments[0];
-        evmc_loader_error_code ec;
-        evmc_module = evmc::VM{evmc_load_and_configure(evmc_config.c_str(), &ec)};
+        const auto& ivmc_config = cli.arguments[0];
+        ivmc_loader_error_code ec;
+        ivmc_module = ivmc::VM{ivmc_load_and_configure(ivmc_config.c_str(), &ec)};
 
         if (ec != EVMC_LOADER_SUCCESS)
         {
-            if (const auto error = evmc_last_error_msg())
+            if (const auto error = ivmc_last_error_msg())
                 std::cerr << "EVMC loading error: " << error << "\n";
             else
                 std::cerr << "EVMC loading error " << ec << "\n";
             return static_cast<int>(ec);
         }
 
-        std::cout << "Testing " << evmc_config << "\n\n";
+        std::cout << "Testing " << ivmc_config << "\n\n";
         return RUN_ALL_TESTS();
     }
     catch (const std::exception& ex)

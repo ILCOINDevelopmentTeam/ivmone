@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/evmc.hpp>
-#include <evmc/instructions.h>
+#include <ivmc/ivmc.hpp>
+#include <ivmc/instructions.h>
 #include <test/utils/utils.hpp>
 #include <algorithm>
 #include <ostream>
@@ -20,7 +20,7 @@ struct bytecode : bytes
 
     bytecode(bytes b) : bytes(std::move(b)) {}
 
-    bytecode(evmc_opcode opcode) : bytes{uint8_t(opcode)} {}
+    bytecode(ivmc_opcode opcode) : bytes{uint8_t(opcode)} {}
 
     template <typename T,
         typename = typename std::enable_if_t<std::is_convertible_v<T, std::string_view>>>
@@ -58,7 +58,7 @@ inline bytecode operator*(int n, bytecode c)
     return out;
 }
 
-inline bytecode operator*(int n, evmc_opcode op)
+inline bytecode operator*(int n, ivmc_opcode op)
 {
     return n * bytecode{op};
 }
@@ -70,7 +70,7 @@ inline bytecode push(bytes_view data)
         throw std::invalid_argument{"push data empty"};
     if (data.size() > (OP_PUSH32 - OP_PUSH1 + 1))
         throw std::invalid_argument{"push data too long"};
-    return evmc_opcode(data.size() + OP_PUSH1 - 1) + bytes{data};
+    return ivmc_opcode(data.size() + OP_PUSH1 - 1) + bytes{data};
 }
 
 inline bytecode push(std::string_view hex_data)
@@ -78,9 +78,9 @@ inline bytecode push(std::string_view hex_data)
     return push(from_hex(hex_data));
 }
 
-bytecode push(evmc_opcode opcode) = delete;
+bytecode push(ivmc_opcode opcode) = delete;
 
-inline bytecode push(evmc_opcode opcode, const bytecode& data)
+inline bytecode push(ivmc_opcode opcode, const bytecode& data)
 {
     if (opcode < OP_PUSH1 || opcode > OP_PUSH32)
         throw std::invalid_argument{"invalid push opcode " + std::to_string(opcode)};
@@ -104,7 +104,7 @@ inline bytecode push(uint64_t n)
     return push(data);
 }
 
-inline bytecode push(evmc::bytes32 bs)
+inline bytecode push(ivmc::bytes32 bs)
 {
     bytes_view data{bs.bytes, sizeof(bs.bytes)};
     return push(data.substr(std::min(data.find_first_not_of(uint8_t{0}), size_t{31})));
@@ -220,7 +220,7 @@ inline bytecode sload(bytecode index)
     return index + OP_SLOAD;
 }
 
-template <evmc_opcode kind>
+template <ivmc_opcode kind>
 struct call_instruction
 {
 private:
@@ -242,7 +242,7 @@ public:
     }
 
 
-    template <evmc_opcode k = kind>
+    template <ivmc_opcode k = kind>
     typename std::enable_if<k == OP_CALL || k == OP_CALLCODE, call_instruction&>::type value(
         bytecode v)
     {
@@ -295,24 +295,24 @@ inline call_instruction<OP_CALLCODE> callcode(bytecode address)
 }
 
 
-inline std::string hex(evmc_opcode opcode) noexcept
+inline std::string hex(ivmc_opcode opcode) noexcept
 {
     return hex(static_cast<uint8_t>(opcode));
 }
 
-inline std::string to_name(evmc_opcode opcode, evmc_revision rev = EVMC_MAX_REVISION) noexcept
+inline std::string to_name(ivmc_opcode opcode, ivmc_revision rev = EVMC_MAX_REVISION) noexcept
 {
-    const auto names = evmc_get_instruction_names_table(rev);
+    const auto names = ivmc_get_instruction_names_table(rev);
     if (const auto name = names[opcode]; name)
         return name;
 
     return "UNDEFINED_INSTRUCTION:" + hex(opcode);
 }
 
-inline std::string decode(bytes_view bytecode, evmc_revision rev)
+inline std::string decode(bytes_view bytecode, ivmc_revision rev)
 {
     auto s = std::string{"bytecode{}"};
-    const auto names = evmc_get_instruction_names_table(rev);
+    const auto names = ivmc_get_instruction_names_table(rev);
     for (auto it = bytecode.begin(); it != bytecode.end(); ++it)
     {
         const auto opcode = *it;

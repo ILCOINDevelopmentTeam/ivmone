@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
-#include <evmc/mocked_host.hpp>
+#include <ivmc/mocked_host.hpp>
 #include <gtest/gtest.h>
 #include <intx/intx.hpp>
 #include <test/utils/bytecode.hpp>
@@ -23,29 +23,29 @@
 #define EXPECT_OUTPUT_INT(X)                                 \
     ASSERT_EQ(result.output_size, sizeof(intx::uint256));    \
     EXPECT_EQ(hex({result.output_data, result.output_size}), \
-        hex({intx::be::store<evmc_bytes32>(intx::uint256{X}).bytes, sizeof(evmc_bytes32)}))
+        hex({intx::be::store<ivmc_bytes32>(intx::uint256{X}).bytes, sizeof(ivmc_bytes32)}))
 
 
 namespace evmone::test
 {
 /// The "evm" test fixture with generic unit tests for EVMC-compatible VM implementations.
-class evm : public testing::TestWithParam<evmc::VM*>
+class evm : public testing::TestWithParam<ivmc::VM*>
 {
 protected:
     /// The VM handle.
-    evmc::VM& vm;
+    ivmc::VM& vm;
 
     /// The EVM revision for unit test execution. Byzantium by default.
-    /// TODO: Add alias evmc::revision.
-    evmc_revision rev = EVMC_BYZANTIUM;
+    /// TODO: Add alias ivmc::revision.
+    ivmc_revision rev = EVMC_BYZANTIUM;
 
     /// The message to be executed by a unit test (with execute() method).
-    /// TODO: Add evmc::message with default constructor.
-    evmc_message msg{};
+    /// TODO: Add ivmc::message with default constructor.
+    ivmc_message msg{};
 
     /// The result of execution (available after execute() is invoked).
-    /// TODO: Add default constructor to evmc::result, update code here.
-    evmc::result result{{}};
+    /// TODO: Add default constructor to ivmc::result, update code here.
+    ivmc::result result{{}};
 
     /// The result output. Updated by execute().
     bytes_view output;
@@ -53,7 +53,7 @@ protected:
     /// The total amount of gas used during execution.
     int64_t gas_used = 0;
 
-    evmc::MockedHost host;
+    ivmc::MockedHost host;
 
     evm() noexcept : vm{*GetParam()} {}
 

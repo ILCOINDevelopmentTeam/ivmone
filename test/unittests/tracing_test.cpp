@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "test/utils/bytecode.hpp"
-#include <evmc/evmc.hpp>
-#include <evmc/mocked_host.hpp>
+#include <ivmc/ivmc.hpp>
+#include <ivmc/mocked_host.hpp>
 #include <evmone/evmone.h>
 #include <evmone/tracing.hpp>
 #include <evmone/vm.hpp>
@@ -15,7 +15,7 @@ using namespace testing;
 class tracing : public Test
 {
 private:
-    evmc::VM m_baseline_vm;
+    ivmc::VM m_baseline_vm;
 
 protected:
     evmone::VM& vm;
@@ -23,14 +23,14 @@ protected:
     std::ostringstream trace_stream;
 
     tracing()
-      : m_baseline_vm{evmc_create_evmone(), {{"O", "0"}}},
+      : m_baseline_vm{ivmc_create_evmone(), {{"O", "0"}}},
         vm{*static_cast<evmone::VM*>(m_baseline_vm.get_raw_pointer())}
     {}
 
     std::string trace(bytes_view code, int32_t depth = 0, uint32_t flags = 0)
     {
-        evmc::MockedHost host;
-        evmc_message msg{};
+        ivmc::MockedHost host;
+        ivmc_message msg{};
         msg.flags = flags;
         msg.depth = depth;
         msg.gas = 1000000;
@@ -47,19 +47,19 @@ protected:
         const uint8_t* m_code = nullptr;
 
         void on_execution_start(
-            evmc_revision /*rev*/, const evmc_message& /*msg*/, bytes_view code) noexcept override
+            ivmc_revision /*rev*/, const ivmc_message& /*msg*/, bytes_view code) noexcept override
         {
             m_code = code.data();
         }
 
-        void on_execution_end(const evmc_result& /*result*/) noexcept override { m_code = nullptr; }
+        void on_execution_end(const ivmc_result& /*result*/) noexcept override { m_code = nullptr; }
 
         void on_instruction_start(
             uint32_t pc, const evmone::ExecutionState& /*state*/) noexcept override
         {
             const auto opcode = m_code[pc];
             m_trace << m_name << pc << ":"
-                    << evmc_get_instruction_names_table(EVMC_MAX_REVISION)[opcode] << " ";
+                    << ivmc_get_instruction_names_table(EVMC_MAX_REVISION)[opcode] << " ";
         }
 
     public:
