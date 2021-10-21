@@ -1,4 +1,4 @@
-# evmone
+# ivmone
 
 [![ethereum badge]][ethereum]
 [![readme style standard badge]][standard readme]
@@ -9,12 +9,12 @@
 
 > Fast Ethereum Virtual Machine implementation
 
-_evmone_ is a C++ implementation of the Ethereum Virtual Machine (EVM). 
+_ivmone_ is a C++ implementation of the Ethereum Virtual Machine (EVM). 
 Created by members of the [Ewasm] team, the project aims for clean, standalone EVM implementation 
 that can be imported as an execution module by Ethereum Client projects. 
-The codebase of _evmone_ is optimized to provide fast and efficient execution of EVM smart contracts.
+The codebase of _ivmone_ is optimized to provide fast and efficient execution of EVM smart contracts.
 
-### Characteristic of evmone
+### Characteristic of ivmone
 
 1. Exposes the [IVMC] API.
 2. Requires C++17 standard.
@@ -48,38 +48,38 @@ The option `O` controls the "optimization level":
 
 ### As geth plugin
 
-evmone implements the [IVMC] API for Ethereum Virtual Machines.
+ivmone implements the [IVMC] API for Ethereum Virtual Machines.
 It can be used as a plugin replacing geth's internal EVM. But for that a modified
 version of geth is needed. The [Ewasm]'s fork
 of go-ethereum provides [binary releases of geth with IVMC support](https://github.com/ewasm/go-ethereum/releases).
 
-Next, download evmone from [Releases].
+Next, download ivmone from [Releases].
 
-Start the downloaded geth with `--vm.evm` option pointing to the evmone shared library.
+Start the downloaded geth with `--vm.evm` option pointing to the ivmone shared library.
 
 ```bash
-geth --vm.evm=./libevmone.so
+geth --vm.evm=./libivmone.so
 ```
 
 ### Building from source
-To build the evmone IVMC module (shared library), test, and benchmark:
+To build the ivmone IVMC module (shared library), test, and benchmark:
 
 1. Fetch the source code:
    ```
-   git clone --recursive https://github.com/ethereum/evmone
-   cd evmone
+   git clone --recursive https://github.com/ethereum/ivmone
+   cd ivmone
    ```
 
 2. Configure the project build and dependencies:
    ##### Linux / OSX
    ```
-   cmake -S . -B build -DEVMONE_TESTING=ON
+   cmake -S . -B build -DIVMONE_TESTING=ON
    ```
 
    ##### Windows
-   *Note: >= Visual Studio 2019 is required since evmone makes heavy use of C++17*
+   *Note: >= Visual Studio 2019 is required since ivmone makes heavy use of C++17*
    ```
-   cmake -S . -B build -DEVMONE_TESTING=ON -G "Visual Studio 16 2019" -A x64
+   cmake -S . -B build -DIVMONE_TESTING=ON -G "Visual Studio 16 2019" -A x64
    ```
    
 3. Build:
@@ -90,8 +90,8 @@ To build the evmone IVMC module (shared library), test, and benchmark:
 
 3. Run the unit tests or benchmarking tool:
    ```
-   build/bin/evmone-unittests
-   build/bin/evmone-bench test/benchmarks
+   build/bin/ivmone-unittests
+   build/bin/ivmone-bench test/benchmarks
    ```
 ### Tools
 
@@ -99,23 +99,23 @@ To build the evmone IVMC module (shared library), test, and benchmark:
 
 The **evm-test** executes a collection of unit tests on 
 any IVMC-compatible Ethereum Virtual Machine implementation.
-The collection of tests comes from the evmone project.
+The collection of tests comes from the ivmone project.
 
 ```bash
-evm-test ./evmone.so
+evm-test ./ivmone.so
 ```
 
 ### Docker
 
-Docker images with evmone are available on Docker Hub:
-https://hub.docker.com/r/ethereum/evmone.
+Docker images with ivmone are available on Docker Hub:
+https://hub.docker.com/r/ethereum/ivmone.
 
-Having the evmone shared library inside a docker is not very useful on its own,
+Having the ivmone shared library inside a docker is not very useful on its own,
 but the image can be used as the base of another one or you can run benchmarks 
 with it.
 
 ```bash
-docker run --entrypoint evmone-bench ethereum/evmone /src/test/benchmarks
+docker run --entrypoint ivmone-bench ethereum/ivmone /src/test/benchmarks
 ```
 
 ## References
@@ -134,21 +134,21 @@ Licensed under the [Apache License, Version 2.0].
 
 
 [@chfast]: https://github.com/chfast
-[appveyor]: https://ci.appveyor.com/project/chfast/evmone/branch/master
-[circleci]: https://circleci.com/gh/ethereum/evmone/tree/master
-[codecov]: https://codecov.io/gh/ethereum/evmone/
+[appveyor]: https://ci.appveyor.com/project/chfast/ivmone/branch/master
+[circleci]: https://circleci.com/gh/ethereum/ivmone/tree/master
+[codecov]: https://codecov.io/gh/ethereum/ivmone/
 [Apache License, Version 2.0]: LICENSE
 [ethereum]: https://ethereum.org
 [IVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
 [Ewasm]: https://github.com/ewasm
 [intx]: https://github.com/chfast/intx
 [ethash]: https://github.com/chfast/ethash
-[Releases]: https://github.com/ethereum/evmone/releases
+[Releases]: https://github.com/ethereum/ivmone/releases
 [standard readme]: https://github.com/RichardLitt/standard-readme
 
-[appveyor badge]: https://img.shields.io/appveyor/ci/chfast/evmone/master.svg?logo=appveyor
-[circleci badge]: https://img.shields.io/circleci/project/github/ethereum/evmone/master.svg?logo=circleci
-[codecov badge]: https://img.shields.io/codecov/c/github/ethereum/evmone.svg?logo=codecov
+[appveyor badge]: https://img.shields.io/appveyor/ci/chfast/ivmone/master.svg?logo=appveyor
+[circleci badge]: https://img.shields.io/circleci/project/github/ethereum/ivmone/master.svg?logo=circleci
+[codecov badge]: https://img.shields.io/codecov/c/github/ethereum/ivmone.svg?logo=codecov
 [ethereum badge]: https://img.shields.io/badge/ethereum-EVM-informational.svg?logo=ethereum
-[license badge]: https://img.shields.io/github/license/ethereum/evmone.svg?logo=apache
+[license badge]: https://img.shields.io/github/license/ethereum/ivmone.svg?logo=apache
 [readme style standard badge]: https://img.shields.io/badge/readme%20style-standard-brightgreen.svg

@@ -1,9 +1,9 @@
-// evmone-fuzzer: LibFuzzer based testing tool for IVMC-compatible EVM implementations.
-// Copyright 2019 The evmone Authors.
+// ivmone-fuzzer: LibFuzzer based testing tool for IVMC-compatible EVM implementations.
+// Copyright 2019 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include <ivmc/mocked_host.hpp>
-#include <evmone/evmone.h>
+#include <ivmone/ivmone.h>
 #include <test/utils/bytecode.hpp>
 #include <test/utils/utils.hpp>
 
@@ -59,10 +59,10 @@ static auto print_input = std::getenv("PRINT");
 extern "C" ivmc_vm* ivmc_create_aleth_interpreter() noexcept;
 
 /// The reference VM.
-static auto ref_vm = ivmc::VM{ivmc_create_evmone()};
+static auto ref_vm = ivmc::VM{ivmc_create_ivmone()};
 
 static ivmc::VM external_vms[] = {
-    ivmc::VM{ivmc_create_evmone(), {{"O", "0"}}},
+    ivmc::VM{ivmc_create_ivmone(), {{"O", "0"}}},
 #if ALETH
     ivmc::VM{ivmc_create_aleth_interpreter()},
 #endif
@@ -182,7 +182,7 @@ inline int expand_block_number(uint8_t x) noexcept
 
 inline int64_t expand_block_timestamp(uint8_t x) noexcept
 {
-    // TODO: If timestamp is -1 Aleth and evmone disagrees how to covert it to uint256.
+    // TODO: If timestamp is -1 Aleth and ivmone disagrees how to covert it to uint256.
     return x < 255 ? int64_t{16777619} * x : std::numeric_limits<int64_t>::max();
 }
 

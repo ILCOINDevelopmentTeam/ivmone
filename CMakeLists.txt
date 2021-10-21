@@ -1,5 +1,5 @@
-# evmone: Ethereum Virtual Machine
-# Copyright 2019 The evmone Authors.
+# ivmone: Ethereum Virtual Machine
+# Copyright 2019 The ivmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
 cmake_minimum_required(VERSION 3.13)
@@ -8,9 +8,9 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/ivmc/.git)
     message(FATAL_ERROR "Git submodules not initialized, execute:\n  git submodule update --init")
 endif()
 
-option(BUILD_SHARED_LIBS "Build evmone as a shared library" ON)
-option(EVMONE_TESTING "Build tests and test tools" OFF)
-option(EVMONE_FUZZING "Instrument libraries and build fuzzing tools" OFF)
+option(BUILD_SHARED_LIBS "Build ivmone as a shared library" ON)
+option(IVMONE_TESTING "Build tests and test tools" OFF)
+option(IVMONE_FUZZING "Instrument libraries and build fuzzing tools" OFF)
 
 include(cmake/cable/bootstrap.cmake)
 include(CableBuildType)
@@ -24,7 +24,7 @@ cable_set_build_type(DEFAULT Release CONFIGURATION_TYPES Release Debug)
 
 include(Hunter/init)
 
-project(evmone LANGUAGES CXX C)
+project(ivmone LANGUAGES CXX C)
 set(PROJECT_VERSION 0.9.0-dev)
 
 string(REGEX MATCH "([0-9]+)\\.([0-9]+)" _ ${PROJECT_VERSION})
@@ -39,7 +39,7 @@ endif()
 hunter_add_package(ethash)
 find_package(ethash CONFIG REQUIRED)
 
-option(IVMC_TOOLS "Build IVMC test tools" ${EVMONE_TESTING})
+option(IVMC_TOOLS "Build IVMC test tools" ${IVMONE_TESTING})
 option(IVMC_INSTALL "Install IVMC" OFF)
 add_subdirectory(ivmc)
 
@@ -74,13 +74,13 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN YES)
 
 include(GNUInstallDirs)
 
-if(EVMONE_FUZZING)
+if(IVMONE_FUZZING)
     if(NOT ${CMAKE_CXX_COMPILER_ID} MATCHES Clang OR ${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 8)
         message(FATAL_ERROR "Clang 8+ compiler is required for fuzzing")
     endif()
 
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build evmone as a shared library" FORCE)
-    set(EVMONE_TESTING ON CACHE BOOL "Build tests and test tools" FORCE)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build ivmone as a shared library" FORCE)
+    set(IVMONE_TESTING ON CACHE BOOL "Build tests and test tools" FORCE)
 
     string(TOUPPER ${CMAKE_BUILD_TYPE} build_type)
     string(COMPARE EQUAL ${build_type} COVERAGE fuzzing_coverage)
@@ -98,7 +98,7 @@ set(include_dir ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(lib)
 
-if(EVMONE_TESTING)
+if(IVMONE_TESTING)
     enable_testing()
     add_subdirectory(test)
 endif()
@@ -106,15 +106,15 @@ endif()
 
 # INSTALL
 
-set(install_targets evmone)
-if(TARGET evmone-standalone)
-    list(APPEND install_targets evmone-standalone)
+set(install_targets ivmone)
+if(TARGET ivmone-standalone)
+    list(APPEND install_targets ivmone-standalone)
 endif()
 if(TARGET evm-test)
     list(APPEND install_targets evm-test)
 endif()
-if(TARGET evmone-bench)
-    list(APPEND install_targets evmone-bench)
+if(TARGET ivmone-bench)
+    list(APPEND install_targets ivmone-bench)
 endif()
 
 set_target_properties(
@@ -124,7 +124,7 @@ set_target_properties(
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
 )
 
-install(TARGETS ${install_targets} EXPORT evmoneTargets
+install(TARGETS ${install_targets} EXPORT ivmoneTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

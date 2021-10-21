@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2019-2020 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2019-2020 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
@@ -13,7 +13,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace evmone
+namespace ivmone
 {
 struct instruction;
 
@@ -83,7 +83,7 @@ static_assert(
 /// The pointer to function implementing an instruction execution.
 using instruction_exec_fn = const instruction* (*)(const instruction*, AdvancedExecutionState&);
 
-/// The evmone intrinsic opcodes.
+/// The ivmone intrinsic opcodes.
 ///
 /// These intrinsic instructions may be injected to the code in the analysis phase.
 /// They contain additional and required logic to be executed by the interpreter.
@@ -148,4 +148,4 @@ IVMC_EXPORT AdvancedCodeAnalysis analyze(
 
 IVMC_EXPORT const op_table& get_op_table(ivmc_revision rev) noexcept;
 
-}  // namespace evmone
+}  // namespace ivmone

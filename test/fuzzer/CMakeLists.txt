@@ -1,11 +1,11 @@
-# evmone-fuzzer: LibFuzzer based testing tool for IVMC-compatible EVM implementations.
-# Copyright 2019-2020 The evmone Authors.
+# ivmone-fuzzer: LibFuzzer based testing tool for IVMC-compatible EVM implementations.
+# Copyright 2019-2020 The ivmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 include(ExternalProject)
 
-get_target_property(type evmone TYPE)
+get_target_property(type ivmone TYPE)
 if(NOT type STREQUAL STATIC_LIBRARY)
-    message(FATAL_ERROR "The evmone must be built as static library")
+    message(FATAL_ERROR "The ivmone must be built as static library")
 endif()
 
 if(fuzzing_coverage)
@@ -14,8 +14,8 @@ else()
     string(REPLACE fuzzer-no-link fuzzer CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS})
 endif()
 
-add_executable(evmone-fuzzer fuzzer.cpp)
-target_link_libraries(evmone-fuzzer PRIVATE evmone testutils ivmc::mocked_host)
+add_executable(ivmone-fuzzer fuzzer.cpp)
+target_link_libraries(ivmone-fuzzer PRIVATE ivmone testutils ivmc::mocked_host)
 
 if(NOT fuzzing_coverage)
     # TODO: Aleth reports undefined behaviors, disable it for fuzzing.
@@ -64,6 +64,6 @@ if(NOT fuzzing_coverage)
         IMPORTED_LOCATION_RELEASE ${build_dir}/libaleth-interpreter/libaleth-interpreter.a
         INTERFACE_LINK_LIBRARIES ${build_dir}/aleth/libaleth-buildinfo.a)
 
-    target_link_libraries(evmone-fuzzer PRIVATE aleth::interpreter)
-    target_compile_definitions(evmone-fuzzer PRIVATE ALETH)
+    target_link_libraries(ivmone-fuzzer PRIVATE aleth::interpreter)
+    target_compile_definitions(ivmone-fuzzer PRIVATE ALETH)
 endif()

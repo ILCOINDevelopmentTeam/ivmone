@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2019 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2019 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "vm_loader.hpp"
@@ -146,9 +146,9 @@ int main(int argc, char* argv[])
     {
         auto cli = cli_parser{"EVM Test", PROJECT_VERSION,
             "Testing tool for IVMC-compatible Ethereum Virtual Machine implementations.\n"
-            "Powered by the evmone project.\n\n"
+            "Powered by the ivmone project.\n\n"
             "IVMC:   https://github.com/ILCOINDevelopmentTeam/ivmc\n"
-            "evmone: https://github.com/ethereum/evmone",
+            "ivmone: https://github.com/ethereum/ivmone",
             {"MODULE"}};
         cli.set_preprocessor(testing::InitGoogleTest);
 

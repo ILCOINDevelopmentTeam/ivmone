@@ -1,5 +1,5 @@
-# evmone: Fast Ethereum Virtual Machine implementation
-# Copyright 2019-2020 The evmone Authors.
+# ivmone: Fast Ethereum Virtual Machine implementation
+# Copyright 2019-2020 The ivmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
 include(LibraryTools)
@@ -7,8 +7,8 @@ include(LibraryTools)
 hunter_add_package(intx)
 find_package(intx CONFIG REQUIRED)
 
-add_library(evmone
-    ${include_dir}/evmone/evmone.h
+add_library(ivmone
+    ${include_dir}/ivmone/ivmone.h
     analysis.cpp
     analysis.hpp
     baseline.cpp
@@ -28,25 +28,25 @@ add_library(evmone
     vm.cpp
     vm.hpp
 )
-target_link_libraries(evmone PUBLIC ivmc::ivmc intx::intx PRIVATE ivmc::instructions ivmc::hex ethash::keccak)
-target_include_directories(evmone PUBLIC
+target_link_libraries(ivmone PUBLIC ivmc::ivmc intx::intx PRIVATE ivmc::instructions ivmc::hex ethash::keccak)
+target_include_directories(ivmone PUBLIC
     $<BUILD_INTERFACE:${include_dir}>$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 if(CABLE_COMPILER_GNULIKE)
-    target_compile_options(evmone PRIVATE -fno-exceptions -fno-rtti)
+    target_compile_options(ivmone PRIVATE -fno-exceptions -fno-rtti)
 endif()
 set_target_properties(
-    evmone
+    ivmone
     PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_SOVERSION}
 )
 
 if(NOT SANITIZE)
-    # On Linux, check if all symbols in evmone are resolved during linking.
-    target_link_options(evmone PRIVATE $<$<PLATFORM_ID:Linux>:LINKER:--no-undefined>)
+    # On Linux, check if all symbols in ivmone are resolved during linking.
+    target_link_options(ivmone PRIVATE $<$<PLATFORM_ID:Linux>:LINKER:--no-undefined>)
 endif()
 
 set_source_files_properties(vm.cpp PROPERTIES COMPILE_DEFINITIONS PROJECT_VERSION="${PROJECT_VERSION}")
 
-add_standalone_library(evmone)
+add_standalone_library(ivmone)

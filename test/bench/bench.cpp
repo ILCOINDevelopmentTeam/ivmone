@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2019 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2019 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "helpers.hpp"
@@ -7,13 +7,13 @@
 #include <benchmark/benchmark.h>
 #include <ivmc/ivmc.hpp>
 #include <ivmc/loader.h>
-#include <evmone/evmone.h>
+#include <ivmone/ivmone.h>
 #include <fstream>
 #include <iostream>
 
 
 #if HAVE_STD_FILESYSTEM
-#include <evmone/baseline.hpp>
+#include <ivmone/baseline.hpp>
 #include <filesystem>
 namespace fs = std::filesystem;
 #else
@@ -23,7 +23,7 @@ namespace fs = ghc::filesystem;
 
 using namespace benchmark;
 
-namespace evmone::test
+namespace ivmone::test
 {
 std::map<std::string_view, ivmc::VM> registered_vms;
 
@@ -216,22 +216,22 @@ void register_benchmarks(const std::vector<BenchmarkCase>& benchmark_cases)
 }
 
 
-/// The error code for CLI arguments parsing error in evmone-bench.
+/// The error code for CLI arguments parsing error in ivmone-bench.
 /// The number tries to be different from IVMC loading error codes.
 constexpr auto cli_parsing_error = -3;
 
-/// Parses evmone-bench CLI arguments and registers benchmark cases.
+/// Parses ivmone-bench CLI arguments and registers benchmark cases.
 ///
 /// The following variants of number arguments are supported (including argv[0]):
 ///
-/// 1: evmone-bench
-///    Uses evmone VMs, only synthetic benchmarks are available.
-/// 2: evmone-bench benchmarks_dir
-///    Uses evmone VMs, loads all benchmarks from benchmarks_dir.
-/// 3: evmone-bench ivmc_config benchmarks_dir
+/// 1: ivmone-bench
+///    Uses ivmone VMs, only synthetic benchmarks are available.
+/// 2: ivmone-bench benchmarks_dir
+///    Uses ivmone VMs, loads all benchmarks from benchmarks_dir.
+/// 3: ivmone-bench ivmc_config benchmarks_dir
 ///    The same as (2) but loads additional custom IVMC VM.
-/// 4: evmone-bench code_hex_file input_hex expected_output_hex.
-///    Uses evmone VMs, registers custom benchmark with the code from the given file,
+/// 4: ivmone-bench code_hex_file input_hex expected_output_hex.
+///    Uses ivmone VMs, registers custom benchmark with the code from the given file,
 ///    and the given input. The benchmark will compare the output with the provided
 ///    expected one.
 std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
@@ -305,11 +305,11 @@ std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
     return {0, {}};
 }
 }  // namespace
-}  // namespace evmone::test
+}  // namespace ivmone::test
 
 int main(int argc, char** argv)
 {
-    using namespace evmone::test;
+    using namespace ivmone::test;
     try
     {
         Initialize(&argc, argv);  // Consumes --benchmark_ options.
@@ -320,8 +320,8 @@ int main(int argc, char** argv)
         if (ec != 0)
             return ec;
 
-        registered_vms["advanced"] = ivmc::VM{ivmc_create_evmone(), {{"O", "2"}}};
-        registered_vms["baseline"] = ivmc::VM{ivmc_create_evmone(), {{"O", "0"}}};
+        registered_vms["advanced"] = ivmc::VM{ivmc_create_ivmone(), {{"O", "2"}}};
+        registered_vms["baseline"] = ivmc::VM{ivmc_create_ivmone(), {{"O", "0"}}};
         register_benchmarks(benchmark_cases);
         register_synthetic_benchmarks();
         RunSpecifiedBenchmarks();

@@ -1,12 +1,12 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2021 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2021 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
 #include "instructions.hpp"
 
 /// Maps opcode to function with instruction implementation.
-namespace evmone::op2fn
+namespace ivmone::op2fn
 {
 inline constexpr auto OP_STOP = stop;
 inline constexpr auto OP_ADD = add;
@@ -151,4 +151,4 @@ inline constexpr auto OP_STATICCALL = call<IVMC_CALL, true>;
 inline constexpr auto OP_INVALID = invalid;
 inline constexpr auto OP_REVERT = return_<IVMC_REVERT>;
 inline constexpr auto OP_SELFDESTRUCT = selfdestruct;
-}  // namespace evmone::op2fn
+}  // namespace ivmone::op2fn

@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2019-2020 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2019-2020 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// This file contains EVM unit tests that perform any kind of calls.
@@ -7,7 +7,7 @@
 #include "evm_fixture.hpp"
 
 using namespace ivmc::literals;
-using evmone::test::evm;
+using ivmone::test::evm;
 
 TEST_P(evm, delegatecall)
 {

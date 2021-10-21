@@ -1,5 +1,5 @@
-# evmone: Fast Ethereum Virtual Machine implementation
-# Copyright 2018-2019 The evmone Authors.
+# ivmone: Fast Ethereum Virtual Machine implementation
+# Copyright 2018-2019 The ivmone Authors.
 # SPDX-License-Identifier: Apache-2.0
 
-add_subdirectory(evmone)
+add_subdirectory(ivmone)

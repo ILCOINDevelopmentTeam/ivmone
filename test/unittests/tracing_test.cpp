@@ -1,13 +1,13 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2021 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2021 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "test/utils/bytecode.hpp"
 #include <ivmc/ivmc.hpp>
 #include <ivmc/mocked_host.hpp>
-#include <evmone/evmone.h>
-#include <evmone/tracing.hpp>
-#include <evmone/vm.hpp>
+#include <ivmone/ivmone.h>
+#include <ivmone/tracing.hpp>
+#include <ivmone/vm.hpp>
 #include <gmock/gmock.h>
 
 using namespace testing;
@@ -18,13 +18,13 @@ private:
     ivmc::VM m_baseline_vm;
 
 protected:
-    evmone::VM& vm;
+    ivmone::VM& vm;
 
     std::ostringstream trace_stream;
 
     tracing()
-      : m_baseline_vm{ivmc_create_evmone(), {{"O", "0"}}},
-        vm{*static_cast<evmone::VM*>(m_baseline_vm.get_raw_pointer())}
+      : m_baseline_vm{ivmc_create_ivmone(), {{"O", "0"}}},
+        vm{*static_cast<ivmone::VM*>(m_baseline_vm.get_raw_pointer())}
     {}
 
     std::string trace(bytes_view code, int32_t depth = 0, uint32_t flags = 0)
@@ -40,7 +40,7 @@ protected:
         return result;
     }
 
-    class OpcodeTracer final : public evmone::Tracer
+    class OpcodeTracer final : public ivmone::Tracer
     {
         std::string m_name;
         std::ostringstream& m_trace;
@@ -55,7 +55,7 @@ protected:
         void on_execution_end(const ivmc_result& /*result*/) noexcept override { m_code = nullptr; }
 
         void on_instruction_start(
-            uint32_t pc, const evmone::ExecutionState& /*state*/) noexcept override
+            uint32_t pc, const ivmone::ExecutionState& /*state*/) noexcept override
         {
             const auto opcode = m_code[pc];
             m_trace << m_name << pc << ":"
@@ -101,7 +101,7 @@ TEST_F(tracing, three_tracers)
 
 TEST_F(tracing, histogram)
 {
-    vm.add_tracer(evmone::create_histogram_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_histogram_tracer(trace_stream));
 
     trace_stream << '\n';
     EXPECT_EQ(trace(add(0, 0)), R"(
@@ -114,7 +114,7 @@ PUSH1,2
 
 TEST_F(tracing, histogram_undefined_instruction)
 {
-    vm.add_tracer(evmone::create_histogram_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_histogram_tracer(trace_stream));
 
     trace_stream << '\n';
     EXPECT_EQ(trace(bytecode{"EF"}), R"(
@@ -126,7 +126,7 @@ opcode,count
 
 TEST_F(tracing, histogram_internal_call)
 {
-    vm.add_tracer(evmone::create_histogram_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_histogram_tracer(trace_stream));
     trace_stream << '\n';
     EXPECT_EQ(trace(push(0) + OP_DUP1 + OP_SWAP1 + OP_POP + OP_POP, 1), R"(
 --- # HISTOGRAM depth=1
@@ -140,7 +140,7 @@ SWAP1,1
 
 TEST_F(tracing, trace)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     trace_stream << '\n';
     EXPECT_EQ(trace(add(2, 3)), R"(
@@ -154,7 +154,7 @@ TEST_F(tracing, trace)
 
 TEST_F(tracing, trace_stack)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     const auto code = push(1) + push(2) + push(3) + push(4) + OP_ADD + OP_ADD + OP_ADD;
     trace_stream << '\n';
@@ -173,7 +173,7 @@ TEST_F(tracing, trace_stack)
 
 TEST_F(tracing, trace_error)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     const auto code = bytecode{OP_POP};
     trace_stream << '\n';
@@ -186,7 +186,7 @@ TEST_F(tracing, trace_error)
 
 TEST_F(tracing, trace_output)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     const auto code = push(0xabcdef) + ret_top();
     trace_stream << '\n';
@@ -204,7 +204,7 @@ TEST_F(tracing, trace_output)
 
 TEST_F(tracing, trace_revert)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     const auto code = mstore(0, 0x0e4404) + push(3) + push(29) + OP_REVERT;
     trace_stream << '\n';
@@ -222,7 +222,7 @@ TEST_F(tracing, trace_revert)
 
 TEST_F(tracing, trace_create)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     trace_stream << '\n';
     EXPECT_EQ(trace({}, 2), R"(
@@ -233,7 +233,7 @@ TEST_F(tracing, trace_create)
 
 TEST_F(tracing, trace_static)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     trace_stream << '\n';
     EXPECT_EQ(trace({}, 2, IVMC_STATIC), R"(
@@ -244,7 +244,7 @@ TEST_F(tracing, trace_static)
 
 TEST_F(tracing, trace_undefined_instruction)
 {
-    vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
+    vm.add_tracer(ivmone::create_instruction_tracer(trace_stream));
 
     const auto code = bytecode{} + OP_JUMPDEST + "EF";
     trace_stream << '\n';

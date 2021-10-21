@@ -147,7 +147,7 @@ or terminate with a different exception type.
 
 In EVMJIT additional instructions that begin a basic block are `GAS` and any of the _call_ instructions. This is because
 these instructions need to know the precise _gas left_ counter value. 
-However, in evmone this problem has been solved without additional blocks splitting 
+However, in ivmone this problem has been solved without additional blocks splitting 
 by attaching the correction value to the mentioned instructions.
 
 ### Undefined instructions

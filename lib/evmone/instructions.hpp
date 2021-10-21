@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2019 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2019 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
@@ -8,7 +8,7 @@
 #include "instruction_traits.hpp"
 #include <ethash/keccak.hpp>
 
-namespace evmone
+namespace ivmone
 {
 using code_iterator = const uint8_t*;
 
@@ -859,4 +859,4 @@ inline StopToken selfdestruct(ExecutionState& state) noexcept
     return {IVMC_SUCCESS};
 }
 
-}  // namespace evmone
+}  // namespace ivmone

@@ -27,12 +27,12 @@ install:
 
 before_build:
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd" -arch=amd64
-  - cmake -S . -B build -DEVMONE_TESTING=ON -Wno-dev -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DHUNTER_CONFIGURATION_TYPES=%CONFIGURATION% -DCMAKE_INSTALL_PREFIX=C:\install
+  - cmake -S . -B build -DIVMONE_TESTING=ON -Wno-dev -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DHUNTER_CONFIGURATION_TYPES=%CONFIGURATION% -DCMAKE_INSTALL_PREFIX=C:\install
 
 build_script:
   - cmake --build build --target package
   - mkdir package
-  - mv build/evmone-* package
+  - mv build/ivmone-* package
 
 artifacts:
   - path: package/*
@@ -50,11 +50,11 @@ deploy_script:
         $env:PATH += ";$env:USERPROFILE\go\bin"
 
         cd $env:appveyor_build_folder
-        $name = "evmone " + ($env:appveyor_repo_tag_name).Remove(0,1)
+        $name = "ivmone " + ($env:appveyor_repo_tag_name).Remove(0,1)
         if (($env:appveyor_repo_tag_name).Contains("-")) {
           $prerelease_flag = "-prerelease"
         }
         echo $name
         echo $prerelease_flag
-        ghr -u ethereum -r evmone -n "$name" $prerelease_flag $env:appveyor_repo_tag_name package/
+        ghr -u ethereum -r ivmone -n "$name" $prerelease_flag $env:appveyor_repo_tag_name package/
       }

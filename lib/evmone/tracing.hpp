@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2021 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2021 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
@@ -8,7 +8,7 @@
 #include <ostream>
 #include <string_view>
 
-namespace evmone
+namespace ivmone
 {
 using bytes_view = std::basic_string_view<uint8_t>;
 
@@ -61,4 +61,4 @@ IVMC_EXPORT std::unique_ptr<Tracer> create_histogram_tracer(std::ostream& out);
 
 IVMC_EXPORT std::unique_ptr<Tracer> create_instruction_tracer(std::ostream& out);
 
-}  // namespace evmone
+}  // namespace ivmone

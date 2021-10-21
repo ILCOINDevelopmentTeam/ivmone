@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2020 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2020 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
 
@@ -7,7 +7,7 @@
 #include <array>
 #include <optional>
 
-namespace evmone::instr
+namespace ivmone::instr
 {
 /// The special gas cost value marking an EVM instruction as "undefined".
 constexpr int16_t undefined = -1;
@@ -345,4 +345,4 @@ constexpr inline std::array<Traits, 256> traits = []() noexcept {
     return table;
 }();
 
-}  // namespace evmone::instr
+}  // namespace ivmone::instr

@@ -106,7 +106,7 @@ commands:
             if [ "$TOOLCHAIN" ]; then
               export toolchain_option="-DTOOLCHAIN=$TOOLCHAIN"
             fi
-            cmake ../project $toolchain_option -DCMAKE_INSTALL_PREFIX=~/install -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DEVMONE_TESTING=ON $CMAKE_OPTIONS
+            cmake ../project $toolchain_option -DCMAKE_INSTALL_PREFIX=~/install -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DIVMONE_TESTING=ON $CMAKE_OPTIONS
       - save_cache:
           name: "Save Hunter cache"
           key: *hunter-cache-key
@@ -166,23 +166,23 @@ commands:
       - run:
           name: "Build Package"
           working_directory: ~/package
-          command: cmake --build ~/build --target package && mv ~/build/evmone*.tar.gz* .
+          command: cmake --build ~/build --target package && mv ~/build/ivmone*.tar.gz* .
       - store_artifacts:
           path: ~/package
           destination: package
       - persist_to_workspace:
           root: ~/package
           paths:
-            - evmone-*
+            - ivmone-*
 
   unpack_package:
     steps:
       - attach_workspace:
           at: ~/package
       - run:
-          name: "Unpack evmone"
+          name: "Unpack ivmone"
           working_directory: ~/package
-          command: tar xz < evmone*.tar.gz
+          command: tar xz < ivmone*.tar.gz
 
 jobs:
 
@@ -246,7 +246,7 @@ jobs:
     executor: linux-gcc-latest
     environment:
       BUILD_TYPE: Coverage
-      CMAKE_OPTIONS: -DEVMONE_TESTING=OFF
+      CMAKE_OPTIONS: -DIVMONE_TESTING=OFF
     steps:
       - build
       - build_silkworm:
@@ -257,12 +257,12 @@ jobs:
           name: "Silkworm-driven consensus tests (Advanced)"
           working_directory: ~/build
           no_output_timeout: 20m
-          command: ~/silkworm/consensus --evm lib/libevmone.so,O=2 --tests ~/tests
+          command: ~/silkworm/consensus --evm lib/libivmone.so,O=2 --tests ~/tests
       - run:
           name: "Silkworm-driven consensus tests (Baseline)"
           working_directory: ~/build
           no_output_timeout: 20m
-          command: ~/silkworm/consensus --evm lib/libevmone.so,O=0 --tests ~/tests
+          command: ~/silkworm/consensus --evm lib/libivmone.so,O=0 --tests ~/tests
       - collect_coverage_gcc
       - upload_coverage:
           flags: consensus
@@ -299,7 +299,7 @@ jobs:
       - run:
           name: "memcheck"
           working_directory: ~/build
-          command: valgrind --vgdb=no --error-exitcode=99 bin/evmone-unittests
+          command: valgrind --vgdb=no --error-exitcode=99 bin/ivmone-unittests
 
   gcc-32bit:
     docker:
@@ -330,18 +330,18 @@ jobs:
           name: "Run unit tests"
           working_directory: ~/build
           command: |
-            bin/evmone-unittests
+            bin/ivmone-unittests
       - run:
           name: "Coverage report"
           working_directory: ~/build
           command: |
             mkdir ~/coverage
-            llvm-profdata merge *.profraw -o evmone.profdata
-            llvm-cov show lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc -region-coverage-lt=100 -format=html > ~/coverage/missing.html
-            llvm-cov show lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc -format=html > ~/coverage/full.html
+            llvm-profdata merge *.profraw -o ivmone.profdata
+            llvm-cov show lib/libivmone.so bin/ivmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=ivmone.profdata -ignore-filename-regex=include/ivmc -region-coverage-lt=100 -format=html > ~/coverage/missing.html
+            llvm-cov show lib/libivmone.so bin/ivmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=ivmone.profdata -ignore-filename-regex=include/ivmc -format=html > ~/coverage/full.html
 
-            llvm-cov report lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc > ~/coverage/report.txt
-            llvm-cov report lib/libevmone.so bin/evmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=evmone.profdata -ignore-filename-regex=include/ivmc -use-color
+            llvm-cov report lib/libivmone.so bin/ivmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=ivmone.profdata -ignore-filename-regex=include/ivmc > ~/coverage/report.txt
+            llvm-cov report lib/libivmone.so bin/ivmone-unittests -Xdemangler llvm-cxxfilt -instr-profile=ivmone.profdata -ignore-filename-regex=include/ivmc -use-color
       - store_artifacts:
           path: ~/coverage
           destination: coverage
@@ -363,7 +363,7 @@ jobs:
 
 workflows:
   version: 2
-  evmone:
+  ivmone:
     jobs:
       - lint
       - release-linux:

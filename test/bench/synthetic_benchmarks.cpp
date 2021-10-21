@@ -1,16 +1,16 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2020 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2020 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "synthetic_benchmarks.hpp"
 #include "helpers.hpp"
 #include "test/utils/bytecode.hpp"
 #include <ivmc/instructions.h>
-#include <evmone/instruction_traits.hpp>
+#include <ivmone/instruction_traits.hpp>
 
 using namespace benchmark;
 
-namespace evmone::test
+namespace ivmone::test
 {
 namespace
 {
@@ -274,4 +274,4 @@ void register_synthetic_benchmarks()
         }
     }
 }
-}  // namespace evmone::test
+}  // namespace ivmone::test

@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2021 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2021 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// This file contains EVM code generators for micro benchmarks,
@@ -9,7 +9,7 @@
 #include <numeric>
 #include <random>
 
-using evmone::test::evm;
+using ivmone::test::evm;
 
 TEST_P(evm, grow_memory_with_mload)
 {

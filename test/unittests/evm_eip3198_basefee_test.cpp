@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2021 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2021 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// This file contains EVM unit tests for EIP-3198 "BASEFEE opcode"
@@ -8,7 +8,7 @@
 #include "evm_fixture.hpp"
 
 using namespace ivmc::literals;
-using evmone::test::evm;
+using ivmone::test::evm;
 
 TEST_P(evm, basefee_pre_london)
 {

@@ -1,18 +1,18 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2018 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2018 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 /// @file
-/// IVMC instance (class VM) and entry point of evmone is defined here.
+/// IVMC instance (class VM) and entry point of ivmone is defined here.
 
 #include "vm.hpp"
 #include "baseline.hpp"
 #include "execution.hpp"
-#include <evmone/evmone.h>
+#include <ivmone/ivmone.h>
 #include <cassert>
 #include <iostream>
 
-namespace evmone
+namespace ivmone
 {
 namespace
 {
@@ -37,12 +37,12 @@ ivmc_set_option_result set_option(ivmc_vm* c_vm, char const* c_name, char const*
     {
         if (value == "0")
         {
-            c_vm->execute = evmone::baseline::execute;
+            c_vm->execute = ivmone::baseline::execute;
             return IVMC_SET_OPTION_SUCCESS;
         }
         else if (value == "2")
         {
-            c_vm->execute = evmone::execute;
+            c_vm->execute = ivmone::execute;
             return IVMC_SET_OPTION_SUCCESS;
         }
         return IVMC_SET_OPTION_INVALID_VALUE;
@@ -66,20 +66,20 @@ ivmc_set_option_result set_option(ivmc_vm* c_vm, char const* c_name, char const*
 inline constexpr VM::VM() noexcept
   : ivmc_vm{
         IVMC_ABI_VERSION,
-        "evmone",
+        "ivmone",
         PROJECT_VERSION,
-        evmone::destroy,
-        evmone::execute,
-        evmone::get_capabilities,
-        evmone::set_option,
+        ivmone::destroy,
+        ivmone::execute,
+        ivmone::get_capabilities,
+        ivmone::set_option,
     }
 {}
 
-}  // namespace evmone
+}  // namespace ivmone
 
 extern "C" {
-IVMC_EXPORT ivmc_vm* ivmc_create_evmone() noexcept
+IVMC_EXPORT ivmc_vm* ivmc_create_ivmone() noexcept
 {
-    return new evmone::VM{};
+    return new ivmone::VM{};
 }
 }

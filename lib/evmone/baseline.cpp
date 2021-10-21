@@ -1,5 +1,5 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2020 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2020 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "baseline.hpp"
@@ -11,7 +11,7 @@
 #include <ivmc/instructions.h>
 #include <memory>
 
-namespace evmone::baseline
+namespace ivmone::baseline
 {
 CodeAnalysis analyze(const uint8_t* code, size_t code_size)
 {
@@ -359,4 +359,4 @@ ivmc_result execute(ivmc_vm* c_vm, const ivmc_host_interface* host, ivmc_host_co
     auto state = std::make_unique<ExecutionState>(*msg, rev, *host, ctx, code, code_size);
     return execute(*vm, *state, jumpdest_map);
 }
-}  // namespace evmone::baseline
+}  // namespace ivmone::baseline

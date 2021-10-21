@@ -1,12 +1,12 @@
-// evmone: Fast Ethereum Virtual Machine implementation
-// Copyright 2020 The evmone Authors.
+// ivmone: Fast Ethereum Virtual Machine implementation
+// Copyright 2020 The ivmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
 #include "baseline_instruction_table.hpp"
 #include "instruction_traits.hpp"
 #include <cassert>
 
-namespace evmone::baseline
+namespace ivmone::baseline
 {
 const InstructionTable& get_baseline_instruction_table(ivmc_revision rev) noexcept
 {
@@ -32,4 +32,4 @@ const InstructionTable& get_baseline_instruction_table(ivmc_revision rev) noexce
 
     return instruction_tables[rev];
 }
-}  // namespace evmone::baseline
+}  // namespace ivmone::baseline
