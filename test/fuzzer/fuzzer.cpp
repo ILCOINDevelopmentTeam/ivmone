@@ -1,4 +1,4 @@
-// evmone-fuzzer: LibFuzzer based testing tool for EVMC-compatible EVM implementations.
+// evmone-fuzzer: LibFuzzer based testing tool for IVMC-compatible EVM implementations.
 // Copyright 2019 The evmone Authors.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -10,7 +10,7 @@
 #include <cstring>
 #include <iostream>
 
-constexpr auto latest_rev = EVMC_ISTANBUL;
+constexpr auto latest_rev = IVMC_ISTANBUL;
 
 
 inline std::ostream& operator<<(std::ostream& os, const ivmc_address& addr)
@@ -86,7 +86,7 @@ public:
         else
             result.gas_left = msg.gas / (gas_left_factor + 3);
 
-        if (msg.kind == EVMC_CREATE || msg.kind == EVMC_CREATE2)
+        if (msg.kind == IVMC_CREATE || msg.kind == IVMC_CREATE2)
         {
             // Use the output to fill the create address.
             // We still keep the output to check if VM is going to ignore it.
@@ -99,7 +99,7 @@ public:
 };
 
 /// The newest "old" EVM revision. Lower priority.
-static constexpr auto old_rev = EVMC_SPURIOUS_DRAGON;
+static constexpr auto old_rev = IVMC_SPURIOUS_DRAGON;
 
 /// The additional gas limit cap for "old" EVM revisions.
 static constexpr auto old_rev_max_gas = 500000;
@@ -237,9 +237,9 @@ fuzz_input populate_input(const uint8_t* data, size_t data_size) noexcept
     in.rev = rev_4bits > latest_rev ? latest_rev : static_cast<ivmc_revision>(rev_4bits);
 
     // The message king should not matter but this 1 bit was free.
-    in.msg.kind = kind_1bit ? EVMC_CREATE : EVMC_CALL;
+    in.msg.kind = kind_1bit ? IVMC_CREATE : IVMC_CALL;
 
-    in.msg.flags = static_1bit ? EVMC_STATIC : 0;
+    in.msg.flags = static_1bit ? IVMC_STATIC : 0;
     in.msg.depth = generate_depth(depth_2bits);
 
     // Set the gas limit. For old revisions cap the gas limit more because:
@@ -300,7 +300,7 @@ inline auto hex(const ivmc_address& addr) noexcept
 inline ivmc_status_code check_and_normalize(ivmc_status_code status) noexcept
 {
     ASSERT(status >= 0);
-    return status <= EVMC_REVERT ? status : EVMC_FAILURE;
+    return status <= IVMC_REVERT ? status : IVMC_FAILURE;
 }
 
 extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noexcept
@@ -332,7 +332,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
 
     const auto ref_res = ref_vm.execute(ref_host, in.rev, in.msg, code.data(), code.size());
     const auto ref_status = check_and_normalize(ref_res.status_code);
-    if (ref_status == EVMC_FAILURE)
+    if (ref_status == IVMC_FAILURE)
         ASSERT_EQ(ref_res.gas_left, 0);
 
     for (auto& vm : external_vms)
@@ -346,7 +346,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t* data, size_t data_size) noe
         ASSERT_EQ(bytes_view(res.output_data, res.output_size),
             bytes_view(ref_res.output_data, ref_res.output_size));
 
-        if (ref_status != EVMC_FAILURE)
+        if (ref_status != IVMC_FAILURE)
         {
             ASSERT_EQ(ref_host.recorded_calls.size(), host.recorded_calls.size());
 

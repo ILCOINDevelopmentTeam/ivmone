@@ -105,7 +105,7 @@ class InstructionTracer : public Tracer
         m_out << "{";
         m_out << R"("depth":)" << msg.depth;
         m_out << R"(,"rev":")" << rev << '"';
-        m_out << R"(,"static":)" << (((msg.flags & EVMC_STATIC) != 0) ? "true" : "false");
+        m_out << R"(,"static":)" << (((msg.flags & IVMC_STATIC) != 0) ? "true" : "false");
         m_out << "}\n";
     }
 
@@ -134,7 +134,7 @@ class InstructionTracer : public Tracer
 
         m_out << "{";
         m_out << R"("error":)";
-        if (result.status_code == EVMC_SUCCESS)
+        if (result.status_code == IVMC_SUCCESS)
             m_out << "null";
         else
             m_out << '"' << result.status_code << '"';

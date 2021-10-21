@@ -53,21 +53,21 @@ inline ivmc_status_code check_requirements(
     const auto metrics = instruction_table[op];
 
     if (INTX_UNLIKELY(metrics.gas_cost == instr::undefined))
-        return EVMC_UNDEFINED_INSTRUCTION;
+        return IVMC_UNDEFINED_INSTRUCTION;
 
     if (INTX_UNLIKELY((state.gas_left -= metrics.gas_cost) < 0))
-        return EVMC_OUT_OF_GAS;
+        return IVMC_OUT_OF_GAS;
 
     const auto stack_size = state.stack.size();
     if (INTX_UNLIKELY(stack_size == Stack::limit))
     {
         if (metrics.can_overflow_stack)
-            return EVMC_STACK_OVERFLOW;
+            return IVMC_STACK_OVERFLOW;
     }
     else if (INTX_UNLIKELY(stack_size < metrics.stack_height_required))
-        return EVMC_STACK_UNDERFLOW;
+        return IVMC_STACK_UNDERFLOW;
 
-    return EVMC_SUCCESS;
+    return IVMC_SUCCESS;
 }
 
 
@@ -113,7 +113,7 @@ template <>
 [[gnu::always_inline]] inline code_iterator invoke<MayFailInstrFn*>(
     MayFailInstrFn* instr_fn, ExecutionState& state, code_iterator pos) noexcept
 {
-    if (const auto status = instr_fn(state); status != EVMC_SUCCESS)
+    if (const auto status = instr_fn(state); status != IVMC_SUCCESS)
     {
         state.status = status;
         return nullptr;
@@ -163,7 +163,7 @@ ivmc_result execute(const VM& vm, ExecutionState& state, const CodeAnalysis& ana
 
         const auto op = *code_it;
         if (const auto status = check_requirements(instruction_table, state, op);
-            status != EVMC_SUCCESS)
+            status != IVMC_SUCCESS)
         {
             state.status = status;
             goto exit;
@@ -331,7 +331,7 @@ ivmc_result execute(const VM& vm, ExecutionState& state, const CodeAnalysis& ana
 
 exit:
     const auto gas_left =
-        (state.status == EVMC_SUCCESS || state.status == EVMC_REVERT) ? state.gas_left : 0;
+        (state.status == IVMC_SUCCESS || state.status == IVMC_REVERT) ? state.gas_left : 0;
 
     const auto result = ivmc::make_result(state.status, gas_left,
         state.output_size != 0 ? &state.memory[state.output_offset] : nullptr, state.output_size);

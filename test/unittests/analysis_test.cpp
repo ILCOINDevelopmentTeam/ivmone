@@ -10,7 +10,7 @@
 
 using namespace evmone;
 
-constexpr auto rev = EVMC_BYZANTIUM;
+constexpr auto rev = IVMC_BYZANTIUM;
 const auto& op_tbl = get_op_table(rev);
 
 TEST(analysis, example1)

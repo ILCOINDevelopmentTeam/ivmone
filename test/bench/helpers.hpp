@@ -16,7 +16,7 @@ namespace evmone::test
 {
 extern std::map<std::string_view, ivmc::VM> registered_vms;
 
-constexpr auto default_revision = EVMC_ISTANBUL;
+constexpr auto default_revision = IVMC_ISTANBUL;
 constexpr auto default_gas_limit = std::numeric_limits<int64_t>::max();
 
 
@@ -105,7 +105,7 @@ inline void bench_execute(benchmark::State& state, ivmc::VM& vm, bytes_view code
     ivmc::MockedHost host;
     ExecutionStateT exec_state;
     ivmc_message msg{};
-    msg.kind = EVMC_CALL;
+    msg.kind = IVMC_CALL;
     msg.gas = gas_limit;
     msg.input_data = input.data();
     msg.input_size = input.size();
@@ -113,7 +113,7 @@ inline void bench_execute(benchmark::State& state, ivmc::VM& vm, bytes_view code
 
     {  // Test run.
         const auto r = execute_fn(vm, exec_state, analysis, msg, rev, host, code);
-        if (r.status_code != EVMC_SUCCESS)
+        if (r.status_code != IVMC_SUCCESS)
         {
             state.SkipWithError(("failure: " + std::to_string(r.status_code)).c_str());
             return;

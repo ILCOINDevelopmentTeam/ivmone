@@ -17,7 +17,7 @@ TEST_P(evm, evmone_loaded_program_relocation)
     // The bytecode of size 2 will create evmone's loaded program of size 4 and will cause
     // the relocation of the C++ vector containing the program instructions.
     execute(bytecode{} + OP_STOP + OP_ORIGIN);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 0);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 0);
 }
 
 TEST_P(evm, evmone_block_stack_req_overflow)
@@ -28,10 +28,10 @@ TEST_P(evm, evmone_block_stack_req_overflow)
 
     const auto code = push(1) + 10 * OP_DUP1 + 5463 * OP_CALL;
     execute(code);
-    EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+    EXPECT_STATUS(IVMC_STACK_UNDERFLOW);
 
     execute(code + ret_top());  // A variant with terminator.
-    EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+    EXPECT_STATUS(IVMC_STACK_UNDERFLOW);
 }
 
 TEST_P(evm, evmone_block_max_stack_growth_overflow)
@@ -46,15 +46,15 @@ TEST_P(evm, evmone_block_max_stack_growth_overflow)
     for (auto max_stack_growth : {32767u, 32768u, 65535u, 65536u, test_max_code_size - 1})
     {
         execute({code_buffer.data(), max_stack_growth});
-        EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+        EXPECT_STATUS(IVMC_STACK_OVERFLOW);
 
         code_buffer[max_stack_growth] = OP_JUMPDEST;
         execute({code_buffer.data(), max_stack_growth + 1});
-        EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+        EXPECT_STATUS(IVMC_STACK_OVERFLOW);
 
         code_buffer[max_stack_growth] = OP_STOP;
         execute({code_buffer.data(), max_stack_growth + 1});
-        EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+        EXPECT_STATUS(IVMC_STACK_OVERFLOW);
 
         code_buffer[max_stack_growth] = OP_MSIZE;  // Restore original opcode.
     }
@@ -80,12 +80,12 @@ TEST_P(evm, evmone_block_gas_cost_overflow_create)
     EXPECT_EQ(code.size(), 402'580);
 
     execute(0, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(IVMC_OUT_OF_GAS);
     EXPECT_TRUE(host.recorded_calls.empty());
     host.recorded_calls.clear();
 
     execute(gas_max - 1, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(IVMC_OUT_OF_GAS);
     if (!host.recorded_calls.empty())  // turbo
     {
         EXPECT_EQ(host.recorded_calls.size(), 3);  // baseline
@@ -96,7 +96,7 @@ TEST_P(evm, evmone_block_gas_cost_overflow_balance)
 {
     // Here we build single-block bytecode with as many BALANCE instructions as possible.
 
-    rev = EVMC_ISTANBUL;  // Here BALANCE costs 700.
+    rev = IVMC_ISTANBUL;  // Here BALANCE costs 700.
 
     constexpr auto gas_max = std::numeric_limits<uint32_t>::max();
     constexpr auto n = gas_max / 700 + 2;
@@ -105,12 +105,12 @@ TEST_P(evm, evmone_block_gas_cost_overflow_balance)
     EXPECT_EQ(code.size(), 6'135'669);
 
     execute(0, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(IVMC_OUT_OF_GAS);
     EXPECT_TRUE(host.recorded_account_accesses.empty());
     host.recorded_account_accesses.clear();
 
     execute(gas_max - 1, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(IVMC_OUT_OF_GAS);
     if (!host.recorded_account_accesses.empty())  // turbo
     {
         EXPECT_EQ(host.recorded_account_accesses.size(), 200);  // baseline
@@ -137,7 +137,7 @@ TEST_P(evm, loop_full_of_jumpdests)
     EXPECT_EQ(code.size(), max_code_size);
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 7987882);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 7987882);
 }
 
 TEST_P(evm, jumpdest_with_high_offset)
@@ -148,6 +148,6 @@ TEST_P(evm, jumpdest_with_high_offset)
         code.resize(offset, OP_INVALID);
         code.push_back(OP_JUMPDEST);
         execute(code);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS) << "JUMPDEST at " << offset;
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS) << "JUMPDEST at " << offset;
     }
 }

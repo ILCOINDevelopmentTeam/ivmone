@@ -12,7 +12,7 @@
 extern "C" {
 #endif
 
-EVMC_EXPORT struct ivmc_vm* ivmc_create_evmone(void) EVMC_NOEXCEPT;
+IVMC_EXPORT struct ivmc_vm* ivmc_create_evmone(void) IVMC_NOEXCEPT;
 
 #if __cplusplus
 }

@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 include(GoogleTest)
-include(${PROJECT_SOURCE_DIR}/ivmc/cmake/EVMC.cmake)
+include(${PROJECT_SOURCE_DIR}/ivmc/cmake/IVMC.cmake)
 
 set(evmone_private_include_dir ${PROJECT_SOURCE_DIR}/lib)
 

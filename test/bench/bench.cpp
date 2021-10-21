@@ -217,7 +217,7 @@ void register_benchmarks(const std::vector<BenchmarkCase>& benchmark_cases)
 
 
 /// The error code for CLI arguments parsing error in evmone-bench.
-/// The number tries to be different from EVMC loading error codes.
+/// The number tries to be different from IVMC loading error codes.
 constexpr auto cli_parsing_error = -3;
 
 /// Parses evmone-bench CLI arguments and registers benchmark cases.
@@ -229,7 +229,7 @@ constexpr auto cli_parsing_error = -3;
 /// 2: evmone-bench benchmarks_dir
 ///    Uses evmone VMs, loads all benchmarks from benchmarks_dir.
 /// 3: evmone-bench ivmc_config benchmarks_dir
-///    The same as (2) but loads additional custom EVMC VM.
+///    The same as (2) but loads additional custom IVMC VM.
 /// 4: evmone-bench code_hex_file input_hex expected_output_hex.
 ///    Uses evmone VMs, registers custom benchmark with the code from the given file,
 ///    and the given input. The benchmark will compare the output with the provided
@@ -270,12 +270,12 @@ std::tuple<int, std::vector<BenchmarkCase>> parseargs(int argc, char** argv)
         auto ec = ivmc_loader_error_code{};
         registered_vms["external"] = ivmc::VM{ivmc_load_and_configure(ivmc_config.c_str(), &ec)};
 
-        if (ec != EVMC_LOADER_SUCCESS)
+        if (ec != IVMC_LOADER_SUCCESS)
         {
             if (const auto error = ivmc_last_error_msg())
-                std::cerr << "EVMC loading error: " << error << "\n";
+                std::cerr << "IVMC loading error: " << error << "\n";
             else
-                std::cerr << "EVMC loading error " << ec << "\n";
+                std::cerr << "IVMC loading error " << ec << "\n";
             return {static_cast<int>(ec), {}};
         }
 

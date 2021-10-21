@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning].
 ## Added
 
 - Full support for **[London]** EVM revision:
-  - [EVMC] upgraded to version [9.0.0][EVMC 9.0.0].
+  - [IVMC] upgraded to version [9.0.0][IVMC 9.0.0].
     [#348](https://github.com/ethereum/evmone/pull/348)
   - Implementation of the [EIP-3198] "BASEFEE opcode".
     [#333](https://github.com/ethereum/evmone/pull/333)
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning].
 - Summary of number of executed opcodes is reported if `histogram` option is enabled in Baseline.
   [#323](https://github.com/ethereum/evmone/pull/323)
 - The `evmone-bench` now reports time of execution without code analysis under "execute" label.
-  The EVMC-like analysis + execution invocation is reported as "total".
+  The IVMC-like analysis + execution invocation is reported as "total".
   [#343](https://github.com/ethereum/evmone/pull/343)
 - The `evmone-bench` has started utilizing `ivmc::MockedHost` which allows using
   state-access (e.g. `SLOAD`/`SSTORE`) instructions in benchmarks.
@@ -71,7 +71,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Changed
 
-- [EVMC] has been upgraded to version [8.0.0][EVMC 8.0.0]. This ABI breaking
+- [IVMC] has been upgraded to version [8.0.0][IVMC 8.0.0]. This ABI breaking
   change has been required to support **Berlin** revision.
   [#309](https://github.com/ethereum/evmone/pull/309)
 - Optimizations to basic `JUMPDEST` analysis used by Baseline interpreter.
@@ -101,7 +101,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Changed
 
-- [EVMC] upgraded to version [7.5.0][EVMC 7.5.0].
+- [IVMC] upgraded to version [7.5.0][IVMC 7.5.0].
   [#294](https://github.com/ethereum/evmone/pull/294)
 - `evmone-bench` tool under-the-hood improvements.
   [#286](https://github.com/ethereum/evmone/pull/286)
@@ -118,7 +118,7 @@ and this project adheres to [Semantic Versioning].
 - [intx] upgraded to version [0.5.0][intx 0.5.0], small performance increase for
   `ADDMOD` and `MULMOD` instructions expected.
   [#239](https://github.com/ethereum/evmone/pull/239)
-- [EVMC] upgraded to version [7.4.0][EVMC 7.4.0].
+- [IVMC] upgraded to version [7.4.0][IVMC 7.4.0].
   [#243](https://github.com/ethereum/evmone/pull/243)
 - C++ exception handling and Run-Time Type Information (RTTI) have been disabled
   for the evmone library (in GCC and Clang compilers).
@@ -153,7 +153,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Changed
 
-- [EVMC] has been upgraded to version [7.1.0][EVMC 7.1.0].
+- [IVMC] has been upgraded to version [7.1.0][IVMC 7.1.0].
   [#212](https://github.com/ethereum/evmone/pull/212)
 
 ## [0.3.0] — 2019-11-14
@@ -173,7 +173,7 @@ This release of evmone adds changes for **[Istanbul]** EVM revision.
 
 ### Changed
 
-- [EVMC] has been upgraded to version [7.0.0][EVMC 7.0.0].
+- [IVMC] has been upgraded to version [7.0.0][IVMC 7.0.0].
   [#204](https://github.com/ethereum/evmone/pull/204)
 
 
@@ -184,16 +184,16 @@ This release of evmone is binary compatible with 0.1 and delivers big performanc
 
 ### Added
 
-- **evm-test** – the testing tool for [EVMC]-compatible EVM implementations.
+- **evm-test** – the testing tool for [IVMC]-compatible EVM implementations.
   [#85](https://github.com/ethereum/evmone/pull/85)
 - **evmone-fuzzer** – the testing tool that fuzzes evmone execution against [aleth-interpreter][Aleth] execution.
-  Any other [EVMC]-compatible EVM implementation can be added easily.
+  Any other [IVMC]-compatible EVM implementation can be added easily.
   [#162](https://github.com/ethereum/evmone/pull/162)
   [#184](https://github.com/ethereum/evmone/pull/184)
 - **evmone-standalone** – single static library that bundles evmone with all its static library dependencies 
   (available on Linux, but support can be extended to other platforms).
   [#95](https://github.com/ethereum/evmone/pull/95)
-- The **evmone-bench** tool has learned how to benchmark external [EVMC]-compatible EVMs.
+- The **evmone-bench** tool has learned how to benchmark external [IVMC]-compatible EVMs.
   [#111](https://github.com/ethereum/evmone/pull/111)
 - The **evmone-bench** tool sorts test cases by file names and allows organizing them in subfolders.
   [#150](https://github.com/ethereum/evmone/pull/150)
@@ -237,7 +237,7 @@ This release of evmone is binary compatible with 0.1 and delivers big performanc
   instead of a parametrized function handling each family of instructions.
   [#126](https://github.com/ethereum/evmone/pull/126)
   [#159](https://github.com/ethereum/evmone/pull/159)
-- [EVMC] upgraded to version [6.3.1](https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v6.3.1).
+- [IVMC] upgraded to version [6.3.1](https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v6.3.1).
   [#129](https://github.com/ethereum/evmone/pull/129)
   [#77](https://github.com/ethereum/evmone/pull/77)
   [#96](https://github.com/ethereum/evmone/pull/96)
@@ -262,7 +262,7 @@ This release of evmone is binary compatible with 0.1 and delivers big performanc
 
 ### Changed
 
-- [EVMC] upgraded to version 6.3.1 (still ABI-compatible with evmone 0.1.0).
+- [IVMC] upgraded to version 6.3.1 (still ABI-compatible with evmone 0.1.0).
   [#171](https://github.com/ethereum/evmone/pull/171)
 - Changes to the **evmone-bench** tool backported from 0.2. 
   This allows better performance comparison between 0.1 and 0.2 as both versions
@@ -278,7 +278,7 @@ It delivers fully-compatible and high-speed EVM implementation.
 ### Added
 
 - Support for all current EVM revisions up to [Petersburg].
-- Exposes [EVMC] 6 ABI.
+- Exposes [IVMC] 6 ABI.
 - The [intx 0.2.0](https://github.com/chfast/intx/releases/tag/v0.2.0) library is used for 256-bit precision arithmetic. 
 
 
@@ -308,13 +308,13 @@ It delivers fully-compatible and high-speed EVM implementation.
 [Istanbul]: https://eips.ethereum.org/EIPS/eip-1679
 [Berlin]: https://github.com/ethereum/eth1.0-specs/blob/master/network-upgrades/mainnet-upgrades/berlin.md
 [London]: https://github.com/ethereum/eth1.0-specs/blob/master/network-upgrades/mainnet-upgrades/london.md
-[EVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
-[EVMC 9.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v9.0.0
-[EVMC 8.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v8.0.0
-[EVMC 7.5.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.5.0
-[EVMC 7.4.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.4.0
-[EVMC 7.1.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.1.0
-[EVMC 7.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.0.0
+[IVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
+[IVMC 9.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v9.0.0
+[IVMC 8.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v8.0.0
+[IVMC 7.5.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.5.0
+[IVMC 7.4.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.4.0
+[IVMC 7.1.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.1.0
+[IVMC 7.0.0]: https://github.com/ILCOINDevelopmentTeam/ivmc/releases/tag/v7.0.0
 [intx]: https://github.com/chfast/intx
 [intx 0.6.0]: https://github.com/chfast/intx/releases/tag/v0.6.0
 [intx 0.5.0]: https://github.com/chfast/intx/releases/tag/v0.5.0

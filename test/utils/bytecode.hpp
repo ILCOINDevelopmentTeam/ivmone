@@ -300,7 +300,7 @@ inline std::string hex(ivmc_opcode opcode) noexcept
     return hex(static_cast<uint8_t>(opcode));
 }
 
-inline std::string to_name(ivmc_opcode opcode, ivmc_revision rev = EVMC_MAX_REVISION) noexcept
+inline std::string to_name(ivmc_opcode opcode, ivmc_revision rev = IVMC_MAX_REVISION) noexcept
 {
     const auto names = ivmc_get_instruction_names_table(rev);
     if (const auto name = names[opcode]; name)

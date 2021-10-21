@@ -12,23 +12,23 @@ using evmone::test::evm;
 
 TEST_P(evm, basefee_pre_london)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = bytecode{OP_BASEFEE};
 
     execute(code);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(IVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(evm, basefee_nominal_case)
 {
     // https://eips.ethereum.org/EIPS/eip-3198#nominal-case
-    rev = EVMC_LONDON;
+    rev = IVMC_LONDON;
     host.tx_context.block_base_fee = ivmc::bytes32{7};
 
     execute(bytecode{} + OP_BASEFEE + OP_STOP);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2);
 
     execute(bytecode{} + OP_BASEFEE + ret_top());
-    EXPECT_GAS_USED(EVMC_SUCCESS, 17);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 17);
     EXPECT_OUTPUT_INT(7);
 }

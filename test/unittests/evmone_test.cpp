@@ -17,7 +17,7 @@ TEST(evmone, info)
 TEST(evmone, capabilities)
 {
     auto vm = ivmc_create_evmone();
-    EXPECT_EQ(vm->get_capabilities(vm), ivmc_capabilities_flagset{EVMC_CAPABILITY_EVM1});
+    EXPECT_EQ(vm->get_capabilities(vm), ivmc_capabilities_flagset{IVMC_CAPABILITY_EVM1});
     vm->destroy(vm);
 }
 
@@ -25,22 +25,22 @@ TEST(evmone, set_option_invalid)
 {
     auto vm = ivmc_create_evmone();
     ASSERT_NE(vm->set_option, nullptr);
-    EXPECT_EQ(vm->set_option(vm, "", ""), EVMC_SET_OPTION_INVALID_NAME);
-    EXPECT_EQ(vm->set_option(vm, "o", ""), EVMC_SET_OPTION_INVALID_NAME);
-    EXPECT_EQ(vm->set_option(vm, "0", ""), EVMC_SET_OPTION_INVALID_NAME);
+    EXPECT_EQ(vm->set_option(vm, "", ""), IVMC_SET_OPTION_INVALID_NAME);
+    EXPECT_EQ(vm->set_option(vm, "o", ""), IVMC_SET_OPTION_INVALID_NAME);
+    EXPECT_EQ(vm->set_option(vm, "0", ""), IVMC_SET_OPTION_INVALID_NAME);
     vm->destroy(vm);
 }
 
 TEST(evmone, set_option_optimization_level)
 {
     auto vm = ivmc::VM{ivmc_create_evmone()};
-    EXPECT_EQ(vm.set_option("O", ""), EVMC_SET_OPTION_INVALID_VALUE);
-    EXPECT_EQ(vm.set_option("O", "0"), EVMC_SET_OPTION_SUCCESS);
-    EXPECT_EQ(vm.set_option("O", "1"), EVMC_SET_OPTION_INVALID_VALUE);
-    EXPECT_EQ(vm.set_option("O", "2"), EVMC_SET_OPTION_SUCCESS);
-    EXPECT_EQ(vm.set_option("O", "3"), EVMC_SET_OPTION_INVALID_VALUE);
+    EXPECT_EQ(vm.set_option("O", ""), IVMC_SET_OPTION_INVALID_VALUE);
+    EXPECT_EQ(vm.set_option("O", "0"), IVMC_SET_OPTION_SUCCESS);
+    EXPECT_EQ(vm.set_option("O", "1"), IVMC_SET_OPTION_INVALID_VALUE);
+    EXPECT_EQ(vm.set_option("O", "2"), IVMC_SET_OPTION_SUCCESS);
+    EXPECT_EQ(vm.set_option("O", "3"), IVMC_SET_OPTION_INVALID_VALUE);
 
-    EXPECT_EQ(vm.set_option("O", "20"), EVMC_SET_OPTION_INVALID_VALUE);
-    EXPECT_EQ(vm.set_option("O", "21"), EVMC_SET_OPTION_INVALID_VALUE);
-    EXPECT_EQ(vm.set_option("O", "22"), EVMC_SET_OPTION_INVALID_VALUE);
+    EXPECT_EQ(vm.set_option("O", "20"), IVMC_SET_OPTION_INVALID_VALUE);
+    EXPECT_EQ(vm.set_option("O", "21"), IVMC_SET_OPTION_INVALID_VALUE);
+    EXPECT_EQ(vm.set_option("O", "22"), IVMC_SET_OPTION_INVALID_VALUE);
 }

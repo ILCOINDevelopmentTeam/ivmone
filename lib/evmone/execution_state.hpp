@@ -157,7 +157,7 @@ struct ExecutionState
     /// TODO: Code should be accessed via code analysis only and this should be removed.
     bytes_view code;
 
-    ivmc_status_code status = EVMC_SUCCESS;
+    ivmc_status_code status = IVMC_SUCCESS;
     size_t output_offset = 0;
     size_t output_size = 0;
 
@@ -194,7 +194,7 @@ struct ExecutionState
         rev = revision;
         return_data.clear();
         code = {code_ptr, code_size};
-        status = EVMC_SUCCESS;
+        status = IVMC_SUCCESS;
         output_offset = 0;
         output_size = 0;
     }

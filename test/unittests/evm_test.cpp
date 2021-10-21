@@ -16,16 +16,16 @@ using evmone::test::evm;
 TEST_P(evm, empty)
 {
     execute(0, bytes_view{});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 0);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 0);
 
     execute(1, bytes_view{});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 0);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 0);
 }
 
 TEST_P(evm, push_and_pop)
 {
     execute(11, push("0102") + OP_POP + push("010203040506070809") + OP_POP);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 10);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 10);
 }
 
 TEST_P(evm, push_implicit_data)
@@ -41,23 +41,23 @@ TEST_P(evm, push_implicit_data)
     {
         code.back() = op;
         execute(code);
-        EXPECT_GAS_USED(EVMC_SUCCESS, 307);
+        EXPECT_GAS_USED(IVMC_SUCCESS, 307);
     }
 }
 
 TEST_P(evm, stack_underflow)
 {
     execute(13, push(1) + OP_POP + push(1) + OP_POP + OP_POP);
-    EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+    EXPECT_STATUS(IVMC_STACK_UNDERFLOW);
 
     execute(bytecode{OP_NOT});
-    EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+    EXPECT_STATUS(IVMC_STACK_UNDERFLOW);
 }
 
 TEST_P(evm, add)
 {
     execute(25, bytecode{"6007600d0160005260206000f3"});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 24);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 24);
     EXPECT_OUTPUT_INT(20);
 }
 
@@ -70,7 +70,7 @@ TEST_P(evm, dup)
     // 0 7 3 5 (20 0)
     // 0 7 3 5 3 0
     execute("6000600760036005818180850101018452602084f3");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 48);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 48);
     EXPECT_OUTPUT_INT(20);
 }
 
@@ -78,7 +78,7 @@ TEST_P(evm, dup_all_1)
 {
     execute(push(1) + "808182838485868788898a8b8c8d8e8f" + "01010101010101010101010101010101" +
             ret_top());
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     EXPECT_OUTPUT_INT(17);
 }
 
@@ -89,9 +89,9 @@ TEST_P(evm, dup_stack_overflow)
         code += "8f";
 
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     execute(code + "8f");
-    EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+    EXPECT_STATUS(IVMC_STACK_OVERFLOW);
 }
 
 TEST_P(evm, dup_stack_underflow)
@@ -100,14 +100,14 @@ TEST_P(evm, dup_stack_underflow)
     {
         const auto op = ivmc_opcode(OP_DUP1 + i);
         execute((i * push(0)) + op);
-        EXPECT_STATUS(EVMC_STACK_UNDERFLOW);
+        EXPECT_STATUS(IVMC_STACK_UNDERFLOW);
     }
 }
 
 TEST_P(evm, sub_and_swap)
 {
     execute(33, "600180810380829052602090f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 32);
     EXPECT_EQ(result.output_data[31], 1);
@@ -117,21 +117,21 @@ TEST_P(evm, swapsn_jumpdest)
 {
     // Test demonstrating possible problem with introducing multibyte SWAP/DUP instructions as per
     // EIP-663 variants B and C.
-    // When SWAPSN is implemented execution will fail with EVMC_BAD_JUMP_DESTINATION.
+    // When SWAPSN is implemented execution will fail with IVMC_BAD_JUMP_DESTINATION.
     const auto swapsn = "b3";
     const auto code = push(4) + OP_JUMP + swapsn + OP_JUMPDEST + push(0) + ret_top();
 
-    rev = EVMC_PETERSBURG;
+    rev = IVMC_PETERSBURG;
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 30);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 30);
 
-    rev = EVMC_ISTANBUL;
+    rev = IVMC_ISTANBUL;
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
 
-    rev = EVMC_MAX_REVISION;
+    rev = IVMC_MAX_REVISION;
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
 }
 
 TEST_P(evm, swapsn_push)
@@ -142,23 +142,23 @@ TEST_P(evm, swapsn_push)
     const auto swapsn = "b3";
     const auto code = push(5) + OP_JUMP + swapsn + push(uint8_t{OP_JUMPDEST}) + push(0) + ret_top();
 
-    rev = EVMC_PETERSBURG;
+    rev = IVMC_PETERSBURG;
     execute(code);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(IVMC_BAD_JUMP_DESTINATION);
 
-    rev = EVMC_ISTANBUL;
+    rev = IVMC_ISTANBUL;
     execute(code);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(IVMC_BAD_JUMP_DESTINATION);
 
-    rev = EVMC_MAX_REVISION;
+    rev = IVMC_MAX_REVISION;
     execute(code);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(IVMC_BAD_JUMP_DESTINATION);
 }
 
 TEST_P(evm, memory_and_not)
 {
     execute(42, "600060018019815381518252800190f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 2);
     EXPECT_EQ(result.output_data[1], 0xfe);
@@ -168,7 +168,7 @@ TEST_P(evm, memory_and_not)
 TEST_P(evm, msize)
 {
     execute(29, "60aa6022535960005360016000f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 0x40);
@@ -177,7 +177,7 @@ TEST_P(evm, msize)
 TEST_P(evm, gas)
 {
     execute(40, "5a5a5a010160005360016000f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 13);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 38 + 36 + 34);
@@ -198,7 +198,7 @@ TEST_P(evm, arith)
     s += "0315";                  // 1
     s += "60005360016000f3";
     execute(100, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 26);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 1);
@@ -217,7 +217,7 @@ TEST_P(evm, comparison)
     s += "818113600653";          // m[6] = -2 s> -1
     s += "60076000f3";
     execute(s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 138);
     ASSERT_EQ(result.output_size, 7);
     EXPECT_EQ(result.output_data[0], 0);
@@ -238,7 +238,7 @@ TEST_P(evm, bitwise)
     s += "818118600253";  // m[2] = aa ^ ff
     s += "60036000f3";
     execute(60, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 3);
     EXPECT_EQ(result.output_data[0], 0xaa & 0xff);
@@ -258,7 +258,7 @@ TEST_P(evm, jump)
     s += "600153";      // m[1] = fa
     s += "60026000f3";  // RETURN(0,2)
     execute(44, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 2);
     EXPECT_EQ(result.output_data[0], 0xbe);
@@ -272,7 +272,7 @@ TEST_P(evm, jumpi)
     s += "00";            // STOP
     s += "5b60016000f3";  // JUMPDEST RETURN(0,1)
     execute(25, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 0);
@@ -281,14 +281,14 @@ TEST_P(evm, jumpi)
 TEST_P(evm, jumpi_else)
 {
     execute(16, dup1(OP_COINBASE) + OP_JUMPI);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 15);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 15);
     EXPECT_EQ(result.output_size, 0);
 }
 
 TEST_P(evm, jumpi_at_the_end)
 {
     execute(1000, "5b6001600057");
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
     EXPECT_EQ(gas_used, 1000);
 }
 
@@ -300,11 +300,11 @@ TEST_P(evm, bad_jumpdest)
     for (auto op : {OP_JUMP, OP_JUMPI})
     {
         execute("4345" + hex(op));
-        EXPECT_EQ(result.status_code, EVMC_BAD_JUMP_DESTINATION);
+        EXPECT_EQ(result.status_code, IVMC_BAD_JUMP_DESTINATION);
         EXPECT_EQ(result.gas_left, 0);
 
         execute("4342" + hex(op));
-        EXPECT_EQ(result.status_code, EVMC_BAD_JUMP_DESTINATION);
+        EXPECT_EQ(result.status_code, IVMC_BAD_JUMP_DESTINATION);
         EXPECT_EQ(result.gas_left, 0);
     }
 }
@@ -313,7 +313,7 @@ TEST_P(evm, jump_to_block_beginning)
 {
     const auto code = jumpi(0, OP_MSIZE) + jump(4);
     execute(code);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(IVMC_BAD_JUMP_DESTINATION);
 }
 
 TEST_P(evm, jumpi_stack)
@@ -330,26 +330,26 @@ TEST_P(evm, jump_over_jumpdest)
     // The code contains 2 consecutive JUMPDESTs. The JUMP at the beginning lands on the second one.
     const auto code = push(4) + OP_JUMP + 2 * OP_JUMPDEST;
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 3 + 8 + 1);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 3 + 8 + 1);
 }
 
 TEST_P(evm, jump_to_missing_push_data)
 {
     execute(push(5) + OP_JUMP + OP_PUSH1);
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(IVMC_BAD_JUMP_DESTINATION);
 }
 
 TEST_P(evm, jump_to_missing_push_data2)
 {
     execute(push(6) + OP_JUMP + OP_PUSH2 + "ef");
-    EXPECT_STATUS(EVMC_BAD_JUMP_DESTINATION);
+    EXPECT_STATUS(IVMC_BAD_JUMP_DESTINATION);
 }
 
 TEST_P(evm, pc_sum)
 {
     const auto code = 4 * OP_PC + 3 * OP_ADD + ret_top();
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     EXPECT_OUTPUT_INT(6);
 }
 
@@ -357,7 +357,7 @@ TEST_P(evm, pc_after_jump_1)
 {
     const auto code = push(3) + OP_JUMP + OP_JUMPDEST + OP_PC + ret_top();
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     EXPECT_OUTPUT_INT(4);
 }
 
@@ -367,11 +367,11 @@ TEST_P(evm, pc_after_jump_2)
                       OP_JUMPDEST + OP_GAS + OP_PC + OP_JUMPDEST + ret_top();
 
     execute(code, "");
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     EXPECT_OUTPUT_INT(6);
 
     execute(code, "ff");
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     EXPECT_OUTPUT_INT(11);
 }
 
@@ -389,7 +389,7 @@ TEST_P(evm, byte)
     s += "600653";      // m[6] = 00
     s += "60076000f3";  // RETURN(0,7)
     execute(72, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 7);
     EXPECT_EQ(result.output_data[0], 0);
@@ -421,7 +421,7 @@ TEST_P(evm, addmod_mulmod)
     s += "602052";      // m[32..]
     s += "60406000f3";  // RETURN(0,64)
     execute(67, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 64);
     auto a = from_hex("65ef55f81fe142622955e990252cb5209a11d4db113d842408fd9c7ae2a29a5a");
@@ -434,7 +434,7 @@ TEST_P(evm, divmod)
 {
     // Div and mod the -1 by the input and return.
     execute("600035600160000381810460005281810660205260406000f3", "0d");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 61);
     ASSERT_EQ(result.output_size, 64);
     auto a = from_hex("0000000000000000000000000000000000000000000000000000000000000013");
@@ -446,7 +446,7 @@ TEST_P(evm, divmod)
 TEST_P(evm, div_by_zero)
 {
     execute(34, dup1(push(0)) + push(0xff) + OP_DIV + OP_SDIV + ret_top());
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     EXPECT_OUTPUT_INT(0);
 }
@@ -454,7 +454,7 @@ TEST_P(evm, div_by_zero)
 TEST_P(evm, mod_by_zero)
 {
     execute(dup1(push(0)) + push(0xeffe) + OP_MOD + OP_SMOD + ret_top());
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 34);
     EXPECT_OUTPUT_INT(0);
 }
@@ -462,7 +462,7 @@ TEST_P(evm, mod_by_zero)
 TEST_P(evm, addmod_mulmod_by_zero)
 {
     execute("6000358080808008091560005260206000f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 52);
     ASSERT_EQ(result.output_size, 32);
     EXPECT_EQ(result.output_data[31], 1);
@@ -478,7 +478,7 @@ TEST_P(evm, signextend)
     s += "602052";      // m[32..]
     s += "60406000f3";  // RETURN(0,64)
     execute(49, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 64);
     auto a = from_hex("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe");
@@ -489,17 +489,17 @@ TEST_P(evm, signextend)
 
 TEST_P(evm, signextend_31)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
 
     execute("61010160000360081c601e0b60005260206000f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 38);
     ASSERT_EQ(result.output_size, 32);
     auto a = from_hex("fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe");
     EXPECT_EQ(bytes(&result.output_data[0], 32), a);
 
     execute("61010160000360081c601f0b60005260206000f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 38);
     ASSERT_EQ(result.output_size, 32);
     a = from_hex("00fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe");
@@ -515,7 +515,7 @@ TEST_P(evm, exp)
     s += "600052";      // m[0..]
     s += "60206000f3";  // RETURN(0,32)
     execute(131, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 32);
     auto a = from_hex("263cf24662b24c371a647c1340022619306e431bf3a4298d4b5998a3f1c1aaa3");
@@ -526,7 +526,7 @@ TEST_P(evm, exp_1_0)
 {
     const auto code = push(0) + push(1) + OP_EXP + ret_top();
     execute(31, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 31);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 31);
     EXPECT_OUTPUT_INT(1);
 }
 
@@ -534,7 +534,7 @@ TEST_P(evm, exp_0_0)
 {
     const auto code = push(0) + push(0) + OP_EXP + ret_top();
     execute(31, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 31);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 31);
     EXPECT_OUTPUT_INT(1);
 }
 
@@ -542,17 +542,17 @@ TEST_P(evm, exp_oog)
 {
     auto code = "6001600003800a";
     execute(1622, code);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
 
     execute(1621, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
     EXPECT_EQ(result.gas_left, 0);
 }
 
 TEST_P(evm, exp_pre_spurious_dragon)
 {
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = IVMC_TANGERINE_WHISTLE;
     std::string s;
     s += "62012019";    // 0x012019
     s += "6003";        // 3
@@ -560,7 +560,7 @@ TEST_P(evm, exp_pre_spurious_dragon)
     s += "600052";      // m[0..]
     s += "60206000f3";  // RETURN(0,32)
     execute(131 - 70, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 32);
     auto a = from_hex("422ea3761c4f6517df7f102bb18b96abf4735099209ca21256a6b8ac4d1daaa3");
@@ -574,7 +574,7 @@ TEST_P(evm, calldataload)
     s += "600052";      // m[0..]
     s += "600a6000f3";  // RETURN(0,10)
     execute(21, s, "0102030405");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 10);
     auto a = from_hex("04050000000000000000");
@@ -584,7 +584,7 @@ TEST_P(evm, calldataload)
 TEST_P(evm, calldataload_outofrange)
 {
     execute(calldataload(1) + ret_top());
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(std::count(result.output_data, result.output_data + result.output_size, 0), 32);
 }
 
@@ -594,14 +594,14 @@ TEST_P(evm, calldatacopy)
     s += "366001600037";  // CALLDATASIZE 1 0 CALLDATACOPY
     s += "600a6000f3";    // RETURN(0,10)
     execute(s, "0102030405");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 23);
     ASSERT_EQ(result.output_size, 10);
     auto a = from_hex("02030405000000000000");
     EXPECT_EQ(bytes(&result.output_data[0], 10), a);
 
     execute(s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 20);
 
     execute("60ff66fffffffffffffa60003760ff6000f3");
@@ -617,7 +617,7 @@ TEST_P(evm, address)
     s += "600a600af3";  // RETURN(10,10)
     msg.recipient.bytes[0] = 0xcc;
     execute(17, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 10);
     auto a = from_hex("0000cc00000000000000");
@@ -632,7 +632,7 @@ TEST_P(evm, caller_callvalue)
     msg.sender.bytes[0] = 0xdd;
     msg.value.bytes[13] = 0xee;
     execute(22, s);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(result.output_size, 10);
     auto a = from_hex("0000ddee000000000000");
@@ -642,14 +642,14 @@ TEST_P(evm, caller_callvalue)
 TEST_P(evm, undefined)
 {
     execute(1, "2a");
-    EXPECT_EQ(result.status_code, EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_EQ(result.status_code, IVMC_UNDEFINED_INSTRUCTION);
     EXPECT_EQ(result.gas_left, 0);
 }
 
 TEST_P(evm, invalid)
 {
     execute(1, "fe");
-    EXPECT_EQ(result.status_code, EVMC_INVALID_INSTRUCTION);
+    EXPECT_EQ(result.status_code, IVMC_INVALID_INSTRUCTION);
     EXPECT_EQ(result.gas_left, 0);
 }
 
@@ -657,42 +657,42 @@ TEST_P(evm, inner_stop)
 {
     const auto code = push(0) + OP_STOP + OP_POP;
     execute(3, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 3);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 3);
 }
 
 TEST_P(evm, inner_return)
 {
     const auto code = ret(0, 0) + push(0);
     execute(6, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 6);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 6);
 }
 
 TEST_P(evm, inner_revert)
 {
     const auto code = revert(0, 0) + push(0);
     execute(6, code);
-    EXPECT_GAS_USED(EVMC_REVERT, 6);
+    EXPECT_GAS_USED(IVMC_REVERT, 6);
 }
 
 TEST_P(evm, inner_invalid)
 {
     const auto code = push(0) + "fe" + OP_POP;
     execute(5, code);
-    EXPECT_GAS_USED(EVMC_INVALID_INSTRUCTION, 5);
+    EXPECT_GAS_USED(IVMC_INVALID_INSTRUCTION, 5);
 }
 
 TEST_P(evm, inner_selfdestruct)
 {
-    rev = EVMC_FRONTIER;
+    rev = IVMC_FRONTIER;
     const auto code = push(0) + OP_SELFDESTRUCT + push(0);
     execute(3, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 3);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 3);
 }
 
 TEST_P(evm, keccak256)
 {
     execute("6108006103ff2060005260206000f3");
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(gas_used, 738);
     ASSERT_EQ(result.output_size, 32);
     auto hash = from_hex("aeffb38c06e111d84216396baefeb7fed397f303d5cb84a33f1e8b485c4a22da");
@@ -715,7 +715,7 @@ TEST_P(evm, revert)
     s += "600260edfd";  // REVERT(ee,1)
     execute(s);
     EXPECT_EQ(gas_used, 39);
-    EXPECT_EQ(result.status_code, EVMC_REVERT);
+    EXPECT_EQ(result.status_code, IVMC_REVERT);
     ASSERT_EQ(result.output_size, 2);
     EXPECT_EQ(result.output_data[0], 0);
     EXPECT_EQ(result.output_data[1], 0xee);
@@ -724,7 +724,7 @@ TEST_P(evm, revert)
 TEST_P(evm, return_empty_buffer_at_offset_0)
 {
     execute(dup1(OP_MSIZE) + OP_RETURN);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 5);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 5);
 }
 
 TEST_P(evm, return_empty_buffer_at_high_offset)
@@ -733,19 +733,19 @@ TEST_P(evm, return_empty_buffer_at_high_offset)
         0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff1_bytes32;
 
     execute(push(0) + OP_DIFFICULTY + OP_RETURN);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
 
     execute(push(0) + OP_DIFFICULTY + OP_REVERT);
-    EXPECT_STATUS(EVMC_REVERT);
+    EXPECT_STATUS(IVMC_REVERT);
 }
 
 TEST_P(evm, shl)
 {
     auto code = "600560011b6000526001601ff3";
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     execute(code);
     EXPECT_EQ(gas_used, 24);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 5 << 1);
 }
@@ -753,10 +753,10 @@ TEST_P(evm, shl)
 TEST_P(evm, shr)
 {
     auto code = "600560011c6000526001601ff3";
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     execute(code);
     EXPECT_EQ(gas_used, 24);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 5 >> 1);
 }
@@ -764,10 +764,10 @@ TEST_P(evm, shr)
 TEST_P(evm, sar)
 {
     auto code = "600160000360021d60005260016000f3";
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     execute(code);
     EXPECT_EQ(gas_used, 30);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 0xff);  // MSB of (-1 >> 2) == -1
 }
@@ -775,21 +775,21 @@ TEST_P(evm, sar)
 TEST_P(evm, sar_01)
 {
     auto code = "600060011d60005260016000f3";
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     execute(code);
     EXPECT_EQ(gas_used, 24);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 0);
 }
 
 TEST_P(evm, shift_overflow)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     for (auto op : {OP_SHL, OP_SHR, OP_SAR})
     {
         execute(not_(0) + 0x100 + op + ret_top());
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         ASSERT_EQ(result.output_size, 32);
         auto a = std::accumulate(result.output_data, result.output_data + result.output_size, 0);
         EXPECT_EQ(a, op == OP_SAR ? 32 * 0xff : 0);
@@ -798,7 +798,7 @@ TEST_P(evm, shift_overflow)
 
 TEST_P(evm, undefined_instructions)
 {
-    for (auto i = 0; i <= EVMC_MAX_REVISION; ++i)
+    for (auto i = 0; i <= IVMC_MAX_REVISION; ++i)
     {
         auto r = ivmc_revision(i);
         auto names = ivmc_get_instruction_names_table(r);
@@ -809,7 +809,7 @@ TEST_P(evm, undefined_instructions)
                 continue;
 
             auto res = vm.execute(host, r, {}, &opcode, sizeof(opcode));
-            EXPECT_EQ(res.status_code, EVMC_UNDEFINED_INSTRUCTION)
+            EXPECT_EQ(res.status_code, IVMC_UNDEFINED_INSTRUCTION)
                 << " for opcode " << hex(opcode) << " on revision " << r;
         }
     }
@@ -817,42 +817,42 @@ TEST_P(evm, undefined_instructions)
 
 TEST_P(evm, undefined_instruction_analysis_overflow)
 {
-    rev = EVMC_PETERSBURG;
+    rev = IVMC_PETERSBURG;
 
     auto undefined_opcode = ivmc_opcode(0x0c);
     auto code = bytecode{undefined_opcode};
 
     execute(code);
-    EXPECT_EQ(result.status_code, EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_EQ(result.status_code, IVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(evm, undefined_instruction_block_cost_negative)
 {
-    // For undefined instructions EVMC instruction tables have cost -1.
+    // For undefined instructions IVMC instruction tables have cost -1.
     // If naively counted block costs can become negative.
 
     const auto max_gas = std::numeric_limits<int64_t>::max();
 
     const auto code1 = bytecode{} + "0f";  // Block cost -1.
     execute(max_gas, code1);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(IVMC_UNDEFINED_INSTRUCTION);
 
     const auto code2 = bytecode{} + OP_JUMPDEST + "c6" + "4b" + OP_STOP;  // Block cost -1.
     execute(max_gas, code2);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(IVMC_UNDEFINED_INSTRUCTION);
 
     const auto code3 = bytecode{} + OP_ADDRESS + "2a" + "2b" + "2c" + "2d";  // Block cost -2.
     execute(max_gas, code3);
-    EXPECT_STATUS(EVMC_UNDEFINED_INSTRUCTION);
+    EXPECT_STATUS(IVMC_UNDEFINED_INSTRUCTION);
 }
 
 TEST_P(evm, abort)
 {
-    for (auto r = 0; r <= EVMC_MAX_REVISION; ++r)
+    for (auto r = 0; r <= IVMC_MAX_REVISION; ++r)
     {
         auto opcode = uint8_t{0xfe};
         auto res = vm.execute(host, ivmc_revision(r), {}, &opcode, sizeof(opcode));
-        EXPECT_EQ(res.status_code, EVMC_INVALID_INSTRUCTION);
+        EXPECT_EQ(res.status_code, IVMC_INVALID_INSTRUCTION);
     }
 }
 
@@ -860,13 +860,13 @@ TEST_P(evm, staticmode)
 {
     auto code_prefix = 1 + 6 * OP_DUP1;
 
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     for (auto op : {OP_SSTORE, OP_LOG0, OP_LOG1, OP_LOG2, OP_LOG3, OP_LOG4, OP_CALL, OP_CREATE,
              OP_CREATE2, OP_SELFDESTRUCT})
     {
-        msg.flags |= EVMC_STATIC;
+        msg.flags |= IVMC_STATIC;
         execute(code_prefix + hex(op));
-        EXPECT_EQ(result.status_code, EVMC_STATIC_MODE_VIOLATION) << hex(op);
+        EXPECT_EQ(result.status_code, IVMC_STATIC_MODE_VIOLATION) << hex(op);
         EXPECT_EQ(result.gas_left, 0);
     }
 }
@@ -876,7 +876,7 @@ TEST_P(evm, memory_big_allocation)
     constexpr auto size = 256 * 1024 + 1;
     const auto code = ret(0, size);
     execute(code);
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     ASSERT_EQ(result.output_size, size);
     for (auto b : bytes_view{result.output_data, result.output_size})
         EXPECT_EQ(b, 0);
@@ -892,7 +892,7 @@ TEST_P(evm, memory_grow_mstore8)
     input << std::hex << std::setw(64) << std::setfill('0') << size;
 
     execute(code, input.str());
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     ASSERT_EQ(result.output_size, ((size + 31) / 32) * 32);
 
     for (size_t i = 0; i < size; ++i)
@@ -906,26 +906,26 @@ TEST_P(evm, mstore8_memory_cost)
 {
     auto code = push(0) + mstore8(0);
     execute(12, code);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     execute(11, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, keccak256_memory_cost)
 {
     execute(45, keccak256(0, 1));
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     execute(44, keccak256(0, 1));
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, calldatacopy_memory_cost)
 {
     auto code = push(1) + push(0) + push(0) + OP_CALLDATACOPY;
     execute(18, code);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     execute(17, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, max_code_size_push1)
@@ -935,10 +935,10 @@ TEST_P(evm, max_code_size_push1)
     ASSERT_EQ(code.size(), max_code_size);
 
     execute(code);
-    EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+    EXPECT_STATUS(IVMC_STACK_OVERFLOW);
 
     execute({code.data(), code.size() - 1});
-    EXPECT_STATUS(EVMC_STACK_OVERFLOW);
+    EXPECT_STATUS(IVMC_STACK_OVERFLOW);
 }
 
 TEST_P(evm, reverse_16_stack_items)
@@ -966,7 +966,7 @@ TEST_P(evm, reverse_16_stack_items)
 
     execute(code);
 
-    EXPECT_STATUS(EVMC_SUCCESS);
+    EXPECT_STATUS(IVMC_SUCCESS);
     ASSERT_EQ(result.output_size, n);
     EXPECT_EQ(hex({result.output_data, result.output_size}), "0102030405060708090a0b0c0d0e0f10");
 }
@@ -1022,7 +1022,7 @@ memory_access_params memory_access_test_cases[] = {
 
 TEST_P(evm, memory_access)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     auto metrics = ivmc_get_instruction_metrics_table(rev);
     auto names = ivmc_get_instruction_names_table(rev);
 
@@ -1071,7 +1071,7 @@ TEST_P(evm, memory_access)
 
             if (p.size == 0)  // It is allowed to request 0 size memory at very big offset.
             {
-                EXPECT_EQ(result.status_code, (t.opcode == OP_REVERT) ? EVMC_REVERT : EVMC_SUCCESS)
+                EXPECT_EQ(result.status_code, (t.opcode == OP_REVERT) ? IVMC_REVERT : IVMC_SUCCESS)
                     << case_descr;
                 EXPECT_NE(result.gas_left, 0) << case_descr;
             }
@@ -1080,12 +1080,12 @@ TEST_P(evm, memory_access)
                 if (t.opcode == OP_RETURNDATACOPY)
                 {
                     // In case of RETURNDATACOPY the "invalid memory access" might also be returned.
-                    EXPECT_TRUE(result.status_code == EVMC_OUT_OF_GAS ||
-                                result.status_code == EVMC_INVALID_MEMORY_ACCESS);
+                    EXPECT_TRUE(result.status_code == IVMC_OUT_OF_GAS ||
+                                result.status_code == IVMC_INVALID_MEMORY_ACCESS);
                 }
                 else
                 {
-                    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS) << case_descr;
+                    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS) << case_descr;
                 }
 
                 EXPECT_EQ(result.gas_left, 0) << case_descr;

@@ -29,9 +29,9 @@ target_include_directories(evmone-unittests PRIVATE ${evmone_private_include_dir
 
 gtest_discover_tests(evmone-unittests TEST_PREFIX ${PROJECT_NAME}/unittests/)
 
-option(EVMONE_EVM_TEST_TOOL "Enable EVM unit testing tool for EVMC implementations (not maintained)" OFF)
+option(EVMONE_EVM_TEST_TOOL "Enable EVM unit testing tool for IVMC implementations (not maintained)" OFF)
 if(EVMONE_EVM_TEST_TOOL)
-    # The evm-test tool that contains the all evm-unittests and loads VMs as EVMC modules.
+    # The evm-test tool that contains the all evm-unittests and loads VMs as IVMC modules.
     add_executable(evm-test main.cpp)
     target_link_libraries(evm-test PRIVATE evm-unittests testutils ivmc::ivmc ivmc::loader GTest::gtest)
 endif()

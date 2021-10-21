@@ -8,7 +8,7 @@
 
 namespace evmone
 {
-/// The evmone EVMC instance.
+/// The evmone IVMC instance.
 class VM : public ivmc_vm
 {
     std::unique_ptr<Tracer> m_first_tracer;

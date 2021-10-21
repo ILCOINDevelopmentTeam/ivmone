@@ -11,8 +11,8 @@ namespace evmone::baseline
 const InstructionTable& get_baseline_instruction_table(ivmc_revision rev) noexcept
 {
     static constexpr auto instruction_tables = []() noexcept {
-        std::array<InstructionTable, EVMC_MAX_REVISION + 1> tables{};
-        for (size_t r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+        std::array<InstructionTable, IVMC_MAX_REVISION + 1> tables{};
+        for (size_t r = IVMC_FRONTIER; r <= IVMC_MAX_REVISION; ++r)
         {
             auto& table = tables[r];
             for (size_t i = 0; i < table.size(); ++i)

@@ -13,8 +13,8 @@ void dump(const evmone::AdvancedCodeAnalysis& analysis)
 {
     using namespace evmone;
 
-    auto names = ivmc_get_instruction_names_table(EVMC_BYZANTIUM);
-    auto metrics = ivmc_get_instruction_metrics_table(EVMC_BYZANTIUM);
+    auto names = ivmc_get_instruction_names_table(IVMC_BYZANTIUM);
+    auto metrics = ivmc_get_instruction_metrics_table(IVMC_BYZANTIUM);
 
     const block_info* block = nullptr;
     for (size_t i = 0; i < analysis.instrs.size(); ++i)

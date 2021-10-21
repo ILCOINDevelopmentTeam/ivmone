@@ -12,10 +12,10 @@ struct AdvancedExecutionState;
 struct AdvancedCodeAnalysis;
 
 /// Execute the already analyzed code using the provided execution state.
-EVMC_EXPORT ivmc_result execute(
+IVMC_EXPORT ivmc_result execute(
     AdvancedExecutionState& state, const AdvancedCodeAnalysis& analysis) noexcept;
 
-/// EVMC-compatible execute() function.
+/// IVMC-compatible execute() function.
 ivmc_result execute(ivmc_vm* vm, const ivmc_host_interface* host, ivmc_host_context* ctx,
     ivmc_revision rev, const ivmc_message* msg, const uint8_t* code, size_t code_size) noexcept;
 }  // namespace evmone

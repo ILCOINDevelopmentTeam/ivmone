@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-/// The loaded EVMC module.
+/// The loaded IVMC module.
 static ivmc::VM ivmc_module;
 
 ivmc::VM& get_vm() noexcept
@@ -19,7 +19,7 @@ ivmc::VM& get_vm() noexcept
 
 /// Simple and copy&paste distributable CLI parser.
 ///
-/// TODO: Originally taken from EVMC and modified here. Copy it back.
+/// TODO: Originally taken from IVMC and modified here. Copy it back.
 class cli_parser
 {
 public:
@@ -145,9 +145,9 @@ int main(int argc, char* argv[])
     try
     {
         auto cli = cli_parser{"EVM Test", PROJECT_VERSION,
-            "Testing tool for EVMC-compatible Ethereum Virtual Machine implementations.\n"
+            "Testing tool for IVMC-compatible Ethereum Virtual Machine implementations.\n"
             "Powered by the evmone project.\n\n"
-            "EVMC:   https://github.com/ILCOINDevelopmentTeam/ivmc\n"
+            "IVMC:   https://github.com/ILCOINDevelopmentTeam/ivmc\n"
             "evmone: https://github.com/ethereum/evmone",
             {"MODULE"}};
         cli.set_preprocessor(testing::InitGoogleTest);
@@ -159,12 +159,12 @@ int main(int argc, char* argv[])
         ivmc_loader_error_code ec;
         ivmc_module = ivmc::VM{ivmc_load_and_configure(ivmc_config.c_str(), &ec)};
 
-        if (ec != EVMC_LOADER_SUCCESS)
+        if (ec != IVMC_LOADER_SUCCESS)
         {
             if (const auto error = ivmc_last_error_msg())
-                std::cerr << "EVMC loading error: " << error << "\n";
+                std::cerr << "IVMC loading error: " << error << "\n";
             else
-                std::cerr << "EVMC loading error " << ec << "\n";
+                std::cerr << "IVMC loading error " << ec << "\n";
             return static_cast<int>(ec);
         }
 

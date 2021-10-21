@@ -13,14 +13,14 @@ using evmone::test::evm;
 TEST_P(evm, eip2929_case1)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-1
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     msg.sender = 0x0000000000000000000000000000000000000000_address;
     msg.recipient = 0x000000000000000000000000636F6E7472616374_address;
     const auto code =
         "0x60013f5060023b506003315060f13f5060f23b5060f3315060f23f5060f33b5060f1315032315030315000";
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 8653);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 8653);
     EXPECT_EQ(result.output_size, 0);
 
     const auto& r = host.recorded_account_accesses;
@@ -54,13 +54,13 @@ TEST_P(evm, eip2929_case1)
 TEST_P(evm, eip2929_case2)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-2
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     msg.sender = 0x0000000000000000000000000000000000000000_address;
     msg.recipient = 0x000000000000000000000000636F6E7472616374_address;
     const auto code = "0x60006000600060ff3c60006000600060ff3c600060006000303c00";
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2835);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2835);
     EXPECT_EQ(result.output_size, 0);
 
     const auto& r = host.recorded_account_accesses;
@@ -75,183 +75,183 @@ TEST_P(evm, eip2929_case2)
 TEST_P(evm, eip2929_case3)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-3
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     msg.sender = 0x0000000000000000000000000000000000000000_address;
     msg.recipient = 0x000000000000000000000000636F6E7472616374_address;
     const auto code = "0x60015450601160015560116002556011600255600254600154";
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 44529);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 44529);
     EXPECT_EQ(result.output_size, 0);
 }
 
 TEST_P(evm, eip2929_case4)
 {
     // https://gist.github.com/holiman/174548cad102096858583c6fbbb0649a#case-4
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     msg.sender = 0x0000000000000000000000000000000000000000_address;
     msg.recipient = 0x000000000000000000000000636F6E7472616374_address;
     const auto code = "0x60008080808060046000f15060008080808060ff6000f15060008080808060ff6000fa50";
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2869);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2869);
     EXPECT_EQ(result.output_size, 0);
 }
 
 TEST_P(evm, eip2929_balance_oog)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(0x0a) + OP_BALANCE;
 
     execute(2603, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2603);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2603);
 
     host.recorded_account_accesses.clear();
     execute(2602, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2602);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 2602);
 }
 
 TEST_P(evm, eip2929_extcodesize_oog)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(0x0a) + OP_EXTCODESIZE;
 
     execute(2603, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2603);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2603);
 
     host.recorded_account_accesses.clear();
     execute(2602, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2602);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 2602);
 }
 
 TEST_P(evm, eip2929_extcodecopy_oog)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(0) + OP_DUP1 + OP_DUP1 + push(0x0a) + OP_EXTCODECOPY;
 
     execute(2612, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2612);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2612);
 
     host.recorded_account_accesses.clear();
     execute(2611, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2611);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 2611);
 }
 
 TEST_P(evm, eip2929_extcodehash_oog)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(0x0a) + OP_EXTCODEHASH;
 
     execute(2603, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2603);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2603);
 
     host.recorded_account_accesses.clear();
     execute(2602, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2602);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 2602);
 }
 
 TEST_P(evm, eip2929_sload_cold)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(1) + OP_SLOAD;
 
     const ivmc::bytes32 key{1};
     host.accounts[msg.recipient].storage[key] = ivmc::bytes32{2};
-    ASSERT_EQ(host.accounts[msg.recipient].storage[key].access_status, EVMC_ACCESS_COLD);
+    ASSERT_EQ(host.accounts[msg.recipient].storage[key].access_status, IVMC_ACCESS_COLD);
     execute(2103, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2103);
-    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, EVMC_ACCESS_WARM);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2103);
+    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, IVMC_ACCESS_WARM);
 
-    host.accounts[msg.recipient].storage[key].access_status = EVMC_ACCESS_COLD;
+    host.accounts[msg.recipient].storage[key].access_status = IVMC_ACCESS_COLD;
     execute(2102, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2102);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 2102);
 }
 
 TEST_P(evm, eip2929_sload_two_slots)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const ivmc::bytes32 key0{0};
     const ivmc::bytes32 key1{1};
     const auto code = push(key0) + OP_SLOAD + OP_POP + push(key1) + OP_SLOAD + OP_POP;
 
     execute(30000, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 4210);
-    EXPECT_EQ(host.accounts[msg.recipient].storage[key0].access_status, EVMC_ACCESS_WARM);
-    EXPECT_EQ(host.accounts[msg.recipient].storage[key1].access_status, EVMC_ACCESS_WARM);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 4210);
+    EXPECT_EQ(host.accounts[msg.recipient].storage[key0].access_status, IVMC_ACCESS_WARM);
+    EXPECT_EQ(host.accounts[msg.recipient].storage[key1].access_status, IVMC_ACCESS_WARM);
 }
 
 TEST_P(evm, eip2929_sload_warm)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(1) + OP_SLOAD;
 
     const ivmc::bytes32 key{1};
-    host.accounts[msg.recipient].storage[key] = {ivmc::bytes32{2}, EVMC_ACCESS_WARM};
-    ASSERT_EQ(host.accounts[msg.recipient].storage[key].access_status, EVMC_ACCESS_WARM);
+    host.accounts[msg.recipient].storage[key] = {ivmc::bytes32{2}, IVMC_ACCESS_WARM};
+    ASSERT_EQ(host.accounts[msg.recipient].storage[key].access_status, IVMC_ACCESS_WARM);
     execute(103, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 103);
-    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, EVMC_ACCESS_WARM);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 103);
+    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, IVMC_ACCESS_WARM);
 
     execute(102, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 102);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 102);
 }
 
 TEST_P(evm, eip2929_sstore_modify_cold)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = sstore(1, 3);
 
     const ivmc::bytes32 key{1};
     host.accounts[msg.recipient].storage[key] = ivmc::bytes32{2};
     execute(5006, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 5006);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 5006);
     EXPECT_EQ(host.accounts[msg.recipient].storage[key].value, ivmc::bytes32{3});
-    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, EVMC_ACCESS_WARM);
+    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, IVMC_ACCESS_WARM);
 
     host.accounts[msg.recipient].storage[key] = ivmc::bytes32{2};
     execute(5005, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 5005);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 5005);
     // The storage will be modified anyway, because the cost is checked after.
     EXPECT_EQ(host.accounts[msg.recipient].storage[key].value, ivmc::bytes32{3});
-    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, EVMC_ACCESS_WARM);
+    EXPECT_EQ(host.accounts[msg.recipient].storage[key].access_status, IVMC_ACCESS_WARM);
 }
 
 TEST_P(evm, eip2929_selfdestruct_cold_beneficiary)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(0xbe) + OP_SELFDESTRUCT;
 
     execute(7603, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 7603);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 7603);
 
     host.recorded_account_accesses.clear();
     execute(7602, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 7602);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 7602);
 }
 
 TEST_P(evm, eip2929_selfdestruct_warm_beneficiary)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = push(0xbe) + OP_SELFDESTRUCT;
 
     host.access_account(0x00000000000000000000000000000000000000be_address);
     execute(5003, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 5003);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 5003);
 
     host.recorded_account_accesses.clear();
     host.access_account(0x00000000000000000000000000000000000000be_address);
     execute(5002, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 5002);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 5002);
 }
 
 TEST_P(evm, eip2929_delegatecall_cold)
 {
-    rev = EVMC_BERLIN;
+    rev = IVMC_BERLIN;
     const auto code = delegatecall(0xde);
     auto& r = host.recorded_account_accesses;
 
     execute(2618, code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 2618);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 2618);
     ASSERT_EQ(r.size(), 4);
     EXPECT_EQ(r[0], msg.sender);
     EXPECT_EQ(r[1], msg.recipient);
@@ -260,7 +260,7 @@ TEST_P(evm, eip2929_delegatecall_cold)
 
     r.clear();
     execute(2617, code);
-    EXPECT_GAS_USED(EVMC_OUT_OF_GAS, 2617);
+    EXPECT_GAS_USED(IVMC_OUT_OF_GAS, 2617);
     ASSERT_EQ(r.size(), 3);
     EXPECT_EQ(r[0], msg.sender);
     EXPECT_EQ(r[1], msg.recipient);

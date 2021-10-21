@@ -17,7 +17,7 @@ ivmc_result execute(AdvancedExecutionState& state, const AdvancedCodeAnalysis& a
         instr = instr->fn(instr, state);
 
     const auto gas_left =
-        (state.status == EVMC_SUCCESS || state.status == EVMC_REVERT) ? state.gas_left : 0;
+        (state.status == IVMC_SUCCESS || state.status == IVMC_REVERT) ? state.gas_left : 0;
 
     return ivmc::make_result(
         state.status, gas_left, state.memory.data() + state.output_offset, state.output_size);

@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 /// @file
-/// EVMC instance (class VM) and entry point of evmone is defined here.
+/// IVMC instance (class VM) and entry point of evmone is defined here.
 
 #include "vm.hpp"
 #include "baseline.hpp"
@@ -24,7 +24,7 @@ void destroy(ivmc_vm* vm) noexcept
 
 constexpr ivmc_capabilities_flagset get_capabilities(ivmc_vm* /*vm*/) noexcept
 {
-    return EVMC_CAPABILITY_EVM1;
+    return IVMC_CAPABILITY_EVM1;
 }
 
 ivmc_set_option_result set_option(ivmc_vm* c_vm, char const* c_name, char const* c_value) noexcept
@@ -38,26 +38,26 @@ ivmc_set_option_result set_option(ivmc_vm* c_vm, char const* c_name, char const*
         if (value == "0")
         {
             c_vm->execute = evmone::baseline::execute;
-            return EVMC_SET_OPTION_SUCCESS;
+            return IVMC_SET_OPTION_SUCCESS;
         }
         else if (value == "2")
         {
             c_vm->execute = evmone::execute;
-            return EVMC_SET_OPTION_SUCCESS;
+            return IVMC_SET_OPTION_SUCCESS;
         }
-        return EVMC_SET_OPTION_INVALID_VALUE;
+        return IVMC_SET_OPTION_INVALID_VALUE;
     }
     else if (name == "trace")
     {
         vm.add_tracer(create_instruction_tracer(std::cerr));
-        return EVMC_SET_OPTION_SUCCESS;
+        return IVMC_SET_OPTION_SUCCESS;
     }
     else if (name == "histogram")
     {
         vm.add_tracer(create_histogram_tracer(std::cerr));
-        return EVMC_SET_OPTION_SUCCESS;
+        return IVMC_SET_OPTION_SUCCESS;
     }
-    return EVMC_SET_OPTION_INVALID_NAME;
+    return IVMC_SET_OPTION_INVALID_NAME;
 }
 
 }  // namespace
@@ -65,7 +65,7 @@ ivmc_set_option_result set_option(ivmc_vm* c_vm, char const* c_name, char const*
 
 inline constexpr VM::VM() noexcept
   : ivmc_vm{
-        EVMC_ABI_VERSION,
+        IVMC_ABI_VERSION,
         "evmone",
         PROJECT_VERSION,
         evmone::destroy,
@@ -78,7 +78,7 @@ inline constexpr VM::VM() noexcept
 }  // namespace evmone
 
 extern "C" {
-EVMC_EXPORT ivmc_vm* ivmc_create_evmone() noexcept
+IVMC_EXPORT ivmc_vm* ivmc_create_evmone() noexcept
 {
     return new evmone::VM{};
 }

@@ -34,7 +34,7 @@ protected:
         msg.flags = flags;
         msg.depth = depth;
         msg.gas = 1000000;
-        m_baseline_vm.execute(host, EVMC_BERLIN, msg, code.data(), code.size());
+        m_baseline_vm.execute(host, IVMC_BERLIN, msg, code.data(), code.size());
         auto result = trace_stream.str();
         trace_stream.str({});
         return result;
@@ -59,7 +59,7 @@ protected:
         {
             const auto opcode = m_code[pc];
             m_trace << m_name << pc << ":"
-                    << ivmc_get_instruction_names_table(EVMC_MAX_REVISION)[opcode] << " ";
+                    << ivmc_get_instruction_names_table(IVMC_MAX_REVISION)[opcode] << " ";
         }
 
     public:
@@ -236,7 +236,7 @@ TEST_F(tracing, trace_static)
     vm.add_tracer(evmone::create_instruction_tracer(trace_stream));
 
     trace_stream << '\n';
-    EXPECT_EQ(trace({}, 2, EVMC_STATIC), R"(
+    EXPECT_EQ(trace({}, 2, IVMC_STATIC), R"(
 {"depth":2,"rev":"Berlin","static":true}
 {"error":null,"gas":1000000,"gasUsed":0,"output":""}
 )");

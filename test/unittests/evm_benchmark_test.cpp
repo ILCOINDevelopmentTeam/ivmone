@@ -20,15 +20,15 @@ TEST_P(evm, grow_memory_with_mload)
 
     // Pokes the same offset 0 all the time.
     execute(code, "0000000000000000000000000000000000000000000000000000000000000000");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 57356);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 57356);
 
     // Pokes memory offset increasing by 1, memory grows every 32nd "iteration".
     execute(code, "0000000000000000000000000000000000000000000000000000000000000001");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 57772);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 57772);
 
     // Pokes memory offset increasing by 32, memory grows every "iteration".
     execute(code, "0000000000000000000000000000000000000000000000000000000000000020");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 102409);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 102409);
 }
 
 TEST_P(evm, grow_memory_with_mstore)
@@ -40,15 +40,15 @@ TEST_P(evm, grow_memory_with_mstore)
 
     // Pokes the same offset 0 all the time.
     execute(code, "0000000000000000000000000000000000000000000000000000000000000000");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 61452);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 61452);
 
     // Pokes memory offset increasing by 1, memory grows every 32nd "iteration".
     execute(code, "0000000000000000000000000000000000000000000000000000000000000001");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 61868);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 61868);
 
     // Pokes memory offset increasing by 32, memory grows every "iteration".
     execute(code, "0000000000000000000000000000000000000000000000000000000000000020");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 106505);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 106505);
 }
 
 TEST_P(evm, jump_around)
@@ -81,5 +81,5 @@ TEST_P(evm, jump_around)
     // EXPECT_EQ(hex(code), "");  // Uncomment to get the code dump.
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, int64_t{(1 + 3 + 8) * num_jumps + 1});
+    EXPECT_GAS_USED(IVMC_SUCCESS, int64_t{(1 + 3 + 8) * num_jumps + 1});
 }

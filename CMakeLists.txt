@@ -39,8 +39,8 @@ endif()
 hunter_add_package(ethash)
 find_package(ethash CONFIG REQUIRED)
 
-option(EVMC_TOOLS "Build EVMC test tools" ${EVMONE_TESTING})
-option(EVMC_INSTALL "Install EVMC" OFF)
+option(IVMC_TOOLS "Build IVMC test tools" ${EVMONE_TESTING})
+option(IVMC_INSTALL "Install IVMC" OFF)
 add_subdirectory(ivmc)
 
 cable_configure_compiler(NO_STACK_PROTECTION)

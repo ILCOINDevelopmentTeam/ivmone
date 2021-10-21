@@ -10,7 +10,7 @@
 
 #define EXPECT_STATUS(STATUS_CODE)                                           \
     EXPECT_EQ(result.status_code, STATUS_CODE);                              \
-    if constexpr (STATUS_CODE != EVMC_SUCCESS && STATUS_CODE != EVMC_REVERT) \
+    if constexpr (STATUS_CODE != IVMC_SUCCESS && STATUS_CODE != IVMC_REVERT) \
     {                                                                        \
         EXPECT_EQ(result.gas_left, 0);                                       \
     }                                                                        \
@@ -28,7 +28,7 @@
 
 namespace evmone::test
 {
-/// The "evm" test fixture with generic unit tests for EVMC-compatible VM implementations.
+/// The "evm" test fixture with generic unit tests for IVMC-compatible VM implementations.
 class evm : public testing::TestWithParam<ivmc::VM*>
 {
 protected:
@@ -37,7 +37,7 @@ protected:
 
     /// The EVM revision for unit test execution. Byzantium by default.
     /// TODO: Add alias ivmc::revision.
-    ivmc_revision rev = EVMC_BYZANTIUM;
+    ivmc_revision rev = IVMC_BYZANTIUM;
 
     /// The message to be executed by a unit test (with execute() method).
     /// TODO: Add ivmc::message with default constructor.
@@ -72,7 +72,7 @@ protected:
         msg.input_size = input.size();
         msg.gas = gas;
 
-        if (rev >= EVMC_BERLIN)  // Add EIP-2929 tweak.
+        if (rev >= IVMC_BERLIN)  // Add EIP-2929 tweak.
         {
             host.access_account(msg.sender);
             host.access_account(msg.recipient);

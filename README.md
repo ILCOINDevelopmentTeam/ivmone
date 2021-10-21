@@ -16,7 +16,7 @@ The codebase of _evmone_ is optimized to provide fast and efficient execution of
 
 ### Characteristic of evmone
 
-1. Exposes the [EVMC] API.
+1. Exposes the [IVMC] API.
 2. Requires C++17 standard.
 3. The [intx] library is used to provide 256-bit integer precision.
 4. The [ethash] library is used to provide Keccak hash function implementation
@@ -48,10 +48,10 @@ The option `O` controls the "optimization level":
 
 ### As geth plugin
 
-evmone implements the [EVMC] API for Ethereum Virtual Machines.
+evmone implements the [IVMC] API for Ethereum Virtual Machines.
 It can be used as a plugin replacing geth's internal EVM. But for that a modified
 version of geth is needed. The [Ewasm]'s fork
-of go-ethereum provides [binary releases of geth with EVMC support](https://github.com/ewasm/go-ethereum/releases).
+of go-ethereum provides [binary releases of geth with IVMC support](https://github.com/ewasm/go-ethereum/releases).
 
 Next, download evmone from [Releases].
 
@@ -62,7 +62,7 @@ geth --vm.evm=./libevmone.so
 ```
 
 ### Building from source
-To build the evmone EVMC module (shared library), test, and benchmark:
+To build the evmone IVMC module (shared library), test, and benchmark:
 
 1. Fetch the source code:
    ```
@@ -98,7 +98,7 @@ To build the evmone EVMC module (shared library), test, and benchmark:
 #### evm-test
 
 The **evm-test** executes a collection of unit tests on 
-any EVMC-compatible Ethereum Virtual Machine implementation.
+any IVMC-compatible Ethereum Virtual Machine implementation.
 The collection of tests comes from the evmone project.
 
 ```bash
@@ -139,7 +139,7 @@ Licensed under the [Apache License, Version 2.0].
 [codecov]: https://codecov.io/gh/ethereum/evmone/
 [Apache License, Version 2.0]: LICENSE
 [ethereum]: https://ethereum.org
-[EVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
+[IVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
 [Ewasm]: https://github.com/ewasm
 [intx]: https://github.com/chfast/intx
 [ethash]: https://github.com/chfast/ethash

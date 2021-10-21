@@ -14,7 +14,7 @@ constexpr int unspecified = -1000000;
 
 constexpr int get_revision_defined_in(size_t op) noexcept
 {
-    for (size_t r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+    for (size_t r = IVMC_FRONTIER; r <= IVMC_MAX_REVISION; ++r)
     {
         if (evmone::instr::gas_costs[r][op] != evmone::instr::undefined)
             return static_cast<int>(r);
@@ -36,7 +36,7 @@ TEST(instructions, validate_since)
 
 TEST(instructions, compare_with_ivmc_instruction_tables)
 {
-    for (int r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+    for (int r = IVMC_FRONTIER; r <= IVMC_MAX_REVISION; ++r)
     {
         const auto rev = static_cast<ivmc_revision>(r);
         const auto& instr_tbl = evmone::instr::gas_costs[rev];
@@ -66,7 +66,7 @@ TEST(instructions, compare_with_ivmc_instruction_tables)
 
 TEST(instructions, compare_undefined_instructions)
 {
-    for (int r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+    for (int r = IVMC_FRONTIER; r <= IVMC_MAX_REVISION; ++r)
     {
         const auto rev = static_cast<ivmc_revision>(r);
         const auto& instr_tbl = evmone::instr::gas_costs[rev];
@@ -79,7 +79,7 @@ TEST(instructions, compare_undefined_instructions)
 
 TEST(instructions, compare_with_ivmc_instruction_names)
 {
-    const auto* ivmc_tbl = ivmc_get_instruction_names_table(EVMC_MAX_REVISION);
+    const auto* ivmc_tbl = ivmc_get_instruction_names_table(IVMC_MAX_REVISION);
     for (size_t i = 0; i < evmone::instr::traits.size(); ++i)
     {
         EXPECT_STREQ(evmone::instr::traits[i].name, ivmc_tbl[i]);

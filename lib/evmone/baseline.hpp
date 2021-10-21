@@ -24,14 +24,14 @@ struct CodeAnalysis
 };
 
 /// Analyze the code to build the bitmap of valid JUMPDEST locations.
-EVMC_EXPORT CodeAnalysis analyze(const uint8_t* code, size_t code_size);
+IVMC_EXPORT CodeAnalysis analyze(const uint8_t* code, size_t code_size);
 
-/// Executes in Baseline interpreter using EVMC-compatible parameters.
+/// Executes in Baseline interpreter using IVMC-compatible parameters.
 ivmc_result execute(ivmc_vm* vm, const ivmc_host_interface* host, ivmc_host_context* ctx,
     ivmc_revision rev, const ivmc_message* msg, const uint8_t* code, size_t code_size) noexcept;
 
 /// Executes in Baseline interpreter on the given external and initialized state.
-EVMC_EXPORT ivmc_result execute(
+IVMC_EXPORT ivmc_result execute(
     const VM&, ExecutionState& state, const CodeAnalysis& analysis) noexcept;
 
 }  // namespace baseline

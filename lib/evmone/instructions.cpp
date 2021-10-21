@@ -23,14 +23,14 @@ template <ivmc_status_code instr_fn(ExecutionState&)>
 const instruction* op(const instruction* instr, AdvancedExecutionState& state) noexcept
 {
     const auto status_code = instr_fn(state);
-    if (status_code != EVMC_SUCCESS)
+    if (status_code != IVMC_SUCCESS)
         return state.exit(status_code);
     return ++instr;
 }
 
 const instruction* op_stop(const instruction*, AdvancedExecutionState& state) noexcept
 {
-    return state.exit(EVMC_SUCCESS);
+    return state.exit(IVMC_SUCCESS);
 }
 
 const instruction* op_sstore(const instruction* instr, AdvancedExecutionState& state) noexcept
@@ -39,11 +39,11 @@ const instruction* op_sstore(const instruction* instr, AdvancedExecutionState& s
     state.gas_left += gas_left_correction;
 
     const auto status = sstore(state);
-    if (status != EVMC_SUCCESS)
+    if (status != IVMC_SUCCESS)
         return state.exit(status);
 
     if ((state.gas_left -= gas_left_correction) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(IVMC_OUT_OF_GAS);
 
     return ++instr;
 }
@@ -54,7 +54,7 @@ const instruction* op_jump(const instruction*, AdvancedExecutionState& state) no
     auto pc = -1;
     if (std::numeric_limits<int>::max() < dst ||
         (pc = find_jumpdest(*state.analysis.advanced, static_cast<int>(dst))) < 0)
-        return state.exit(EVMC_BAD_JUMP_DESTINATION);
+        return state.exit(IVMC_BAD_JUMP_DESTINATION);
 
     return &state.analysis.advanced->instrs[static_cast<size_t>(pc)];
 }
@@ -104,7 +104,7 @@ const instruction* op_push_full(const instruction* instr, AdvancedExecutionState
 
 const instruction* op_invalid(const instruction*, AdvancedExecutionState& state) noexcept
 {
-    return state.exit(EVMC_INVALID_INSTRUCTION);
+    return state.exit(IVMC_INVALID_INSTRUCTION);
 }
 
 template <ivmc_status_code status_code>
@@ -114,7 +114,7 @@ const instruction* op_return(const instruction*, AdvancedExecutionState& state) 
     const auto size = state.stack[1];
 
     if (!check_memory(state, offset, size))
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(IVMC_OUT_OF_GAS);
 
     state.output_size = static_cast<size_t>(size);
     if (state.output_size != 0)
@@ -129,11 +129,11 @@ const instruction* op_call(const instruction* instr, AdvancedExecutionState& sta
     state.gas_left += gas_left_correction;
 
     const auto status = call<Kind, Static>(state);
-    if (status != EVMC_SUCCESS)
+    if (status != IVMC_SUCCESS)
         return state.exit(status);
 
     if ((state.gas_left -= gas_left_correction) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(IVMC_OUT_OF_GAS);
 
     return ++instr;
 }
@@ -145,18 +145,18 @@ const instruction* op_create(const instruction* instr, AdvancedExecutionState& s
     state.gas_left += gas_left_correction;
 
     const auto status = create<Kind>(state);
-    if (status != EVMC_SUCCESS)
+    if (status != IVMC_SUCCESS)
         return state.exit(status);
 
     if ((state.gas_left -= gas_left_correction) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(IVMC_OUT_OF_GAS);
 
     return ++instr;
 }
 
 const instruction* op_undefined(const instruction*, AdvancedExecutionState& state) noexcept
 {
-    return state.exit(EVMC_UNDEFINED_INSTRUCTION);
+    return state.exit(IVMC_UNDEFINED_INSTRUCTION);
 }
 
 const instruction* op_selfdestruct(const instruction*, AdvancedExecutionState& state) noexcept
@@ -169,13 +169,13 @@ const instruction* opx_beginblock(const instruction* instr, AdvancedExecutionSta
     auto& block = instr->arg.block;
 
     if ((state.gas_left -= block.gas_cost) < 0)
-        return state.exit(EVMC_OUT_OF_GAS);
+        return state.exit(IVMC_OUT_OF_GAS);
 
     if (static_cast<int>(state.stack.size()) < block.stack_req)
-        return state.exit(EVMC_STACK_UNDERFLOW);
+        return state.exit(IVMC_STACK_UNDERFLOW);
 
     if (static_cast<int>(state.stack.size()) + block.stack_max_growth > Stack::limit)
-        return state.exit(EVMC_STACK_OVERFLOW);
+        return state.exit(IVMC_STACK_OVERFLOW);
 
     state.current_block_cost = block.gas_cost;
     return ++instr;
@@ -298,14 +298,14 @@ constexpr std::array<instruction_exec_fn, 256> instruction_implementations = [](
     table[OP_LOG3] = op<log<3>>;
     table[OP_LOG4] = op<log<4>>;
 
-    table[OP_CREATE] = op_create<EVMC_CREATE>;
-    table[OP_CALL] = op_call<EVMC_CALL>;
-    table[OP_CALLCODE] = op_call<EVMC_CALLCODE>;
-    table[OP_RETURN] = op_return<EVMC_SUCCESS>;
-    table[OP_DELEGATECALL] = op_call<EVMC_DELEGATECALL>;
-    table[OP_CREATE2] = op_create<EVMC_CREATE2>;
-    table[OP_STATICCALL] = op_call<EVMC_CALL, true>;
-    table[OP_REVERT] = op_return<EVMC_REVERT>;
+    table[OP_CREATE] = op_create<IVMC_CREATE>;
+    table[OP_CALL] = op_call<IVMC_CALL>;
+    table[OP_CALLCODE] = op_call<IVMC_CALLCODE>;
+    table[OP_RETURN] = op_return<IVMC_SUCCESS>;
+    table[OP_DELEGATECALL] = op_call<IVMC_DELEGATECALL>;
+    table[OP_CREATE2] = op_create<IVMC_CREATE2>;
+    table[OP_STATICCALL] = op_call<IVMC_CALL, true>;
+    table[OP_REVERT] = op_return<IVMC_REVERT>;
     table[OP_INVALID] = op_invalid;
     table[OP_SELFDESTRUCT] = op_selfdestruct;
 
@@ -313,11 +313,11 @@ constexpr std::array<instruction_exec_fn, 256> instruction_implementations = [](
 }();
 }  // namespace
 
-EVMC_EXPORT const op_table& get_op_table(ivmc_revision rev) noexcept
+IVMC_EXPORT const op_table& get_op_table(ivmc_revision rev) noexcept
 {
     static constexpr auto op_tables = []() noexcept {
-        std::array<op_table, EVMC_MAX_REVISION + 1> tables{};
-        for (size_t r = EVMC_FRONTIER; r <= EVMC_MAX_REVISION; ++r)
+        std::array<op_table, IVMC_MAX_REVISION + 1> tables{};
+        for (size_t r = IVMC_FRONTIER; r <= IVMC_MAX_REVISION; ++r)
         {
             auto& table = tables[r];
             for (size_t i = 0; i < table.size(); ++i)

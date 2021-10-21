@@ -26,7 +26,7 @@ TEST_P(evm, delegatecall)
     execute(1700, code);
 
     EXPECT_EQ(gas_used, 1690);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
 
     auto gas_left = 1700 - 736;
     ASSERT_EQ(host.recorded_calls.size(), 1);
@@ -42,27 +42,27 @@ TEST_P(evm, delegatecall)
 TEST_P(evm, delegatecall_static)
 {
     // Checks if DELEGATECALL forwards the "static" flag.
-    msg.flags = EVMC_STATIC;
+    msg.flags = IVMC_STATIC;
     execute(bytecode{} + delegatecall(0).gas(1));
     ASSERT_EQ(host.recorded_calls.size(), 1);
     const auto& call_msg = host.recorded_calls.back();
     EXPECT_EQ(call_msg.gas, 1);
-    EXPECT_EQ(call_msg.flags, uint32_t{EVMC_STATIC});
-    EXPECT_GAS_USED(EVMC_SUCCESS, 719);
+    EXPECT_EQ(call_msg.flags, uint32_t{IVMC_STATIC});
+    EXPECT_GAS_USED(IVMC_SUCCESS, 719);
 }
 
 TEST_P(evm, delegatecall_oog_depth_limit)
 {
-    rev = EVMC_HOMESTEAD;
+    rev = IVMC_HOMESTEAD;
     msg.depth = 1024;
     const auto code = bytecode{} + delegatecall(0).gas(16) + ret_top();
 
     execute(code);
-    EXPECT_GAS_USED(EVMC_SUCCESS, 73);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 73);
     EXPECT_OUTPUT_INT(0);
 
     execute(73, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, create)
@@ -78,7 +78,7 @@ TEST_P(evm, create)
     execute(300000, bytecode{"602060006001f0600155"});
 
     EXPECT_EQ(gas_used, 115816);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
 
     auto key = ivmc_bytes32{};
     key.bytes[31] = 1;
@@ -92,21 +92,21 @@ TEST_P(evm, create)
 TEST_P(evm, create_gas)
 {
     auto c = size_t{0};
-    for (auto r : {EVMC_HOMESTEAD, EVMC_TANGERINE_WHISTLE})
+    for (auto r : {IVMC_HOMESTEAD, IVMC_TANGERINE_WHISTLE})
     {
         ++c;
         rev = r;
         execute(50000, "60008080f0");
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
-        EXPECT_EQ(gas_used, rev == EVMC_HOMESTEAD ? 50000 : 49719) << rev;
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
+        EXPECT_EQ(gas_used, rev == IVMC_HOMESTEAD ? 50000 : 49719) << rev;
         ASSERT_EQ(host.recorded_calls.size(), c);
-        EXPECT_EQ(host.recorded_calls.back().gas, rev == EVMC_HOMESTEAD ? 17991 : 17710) << rev;
+        EXPECT_EQ(host.recorded_calls.back().gas, rev == IVMC_HOMESTEAD ? 17991 : 17710) << rev;
     }
 }
 
 TEST_P(evm, create2)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     auto& account = host.accounts[{}];
     account.set_balance(1);
 
@@ -118,14 +118,14 @@ TEST_P(evm, create2)
     execute(300000, "605a604160006001f5600155");
 
     EXPECT_EQ(gas_used, 115817);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
 
 
     ASSERT_EQ(host.recorded_calls.size(), 1);
     const auto& call_msg = host.recorded_calls.back();
     EXPECT_EQ(call_msg.create2_salt.bytes[31], 0x5a);
     EXPECT_EQ(call_msg.gas, 263775);
-    EXPECT_EQ(call_msg.kind, EVMC_CREATE2);
+    EXPECT_EQ(call_msg.kind, IVMC_CREATE2);
 
     auto key = ivmc_bytes32{};
     key.bytes[31] = 1;
@@ -136,31 +136,31 @@ TEST_P(evm, create2)
 
 TEST_P(evm, create2_salt_cost)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     auto code = "600060208180f5";
 
 
     execute(32021, code);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(result.gas_left, 0);
     ASSERT_EQ(host.recorded_calls.size(), 1);
-    EXPECT_EQ(host.recorded_calls.back().kind, EVMC_CREATE2);
+    EXPECT_EQ(host.recorded_calls.back().kind, IVMC_CREATE2);
     EXPECT_EQ(host.recorded_calls.back().depth, 1);
 
     execute(32021 - 1, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
     EXPECT_EQ(result.gas_left, 0);
     EXPECT_EQ(host.recorded_calls.size(), 1);  // No another CREATE2.
 }
 
 TEST_P(evm, create_balance_too_low)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     host.accounts[{}].set_balance(1);
     for (auto op : {OP_CREATE, OP_CREATE2})
     {
         execute(push(2) + (3 * OP_DUP1) + hex(op) + ret_top());
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         EXPECT_EQ(std::count(result.output_data, result.output_data + result.output_size, 0), 32);
         EXPECT_EQ(host.recorded_calls.size(), 0);
     }
@@ -171,34 +171,34 @@ TEST_P(evm, create_failure)
     host.call_result.create_address = 0x00000000000000000000000000000000000000ce_address;
     const auto create_address =
         bytes_view{host.call_result.create_address.bytes, sizeof(host.call_result.create_address)};
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     for (auto op : {OP_CREATE, OP_CREATE2})
     {
         const auto code = push(0) + (3 * OP_DUP1) + op + ret_top();
 
-        host.call_result.status_code = EVMC_SUCCESS;
+        host.call_result.status_code = IVMC_SUCCESS;
         execute(code);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         ASSERT_EQ(result.output_size, 32);
         EXPECT_EQ((bytes_view{result.output_data + 12, 20}), create_address);
         ASSERT_EQ(host.recorded_calls.size(), 1);
-        EXPECT_EQ(host.recorded_calls.back().kind, op == OP_CREATE ? EVMC_CREATE : EVMC_CREATE2);
+        EXPECT_EQ(host.recorded_calls.back().kind, op == OP_CREATE ? IVMC_CREATE : IVMC_CREATE2);
         host.recorded_calls.clear();
 
-        host.call_result.status_code = EVMC_REVERT;
+        host.call_result.status_code = IVMC_REVERT;
         execute(code);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         EXPECT_OUTPUT_INT(0);
         ASSERT_EQ(host.recorded_calls.size(), 1);
-        EXPECT_EQ(host.recorded_calls.back().kind, op == OP_CREATE ? EVMC_CREATE : EVMC_CREATE2);
+        EXPECT_EQ(host.recorded_calls.back().kind, op == OP_CREATE ? IVMC_CREATE : IVMC_CREATE2);
         host.recorded_calls.clear();
 
-        host.call_result.status_code = EVMC_FAILURE;
+        host.call_result.status_code = IVMC_FAILURE;
         execute(code);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         EXPECT_OUTPUT_INT(0);
         ASSERT_EQ(host.recorded_calls.size(), 1);
-        EXPECT_EQ(host.recorded_calls.back().kind, op == OP_CREATE ? EVMC_CREATE : EVMC_CREATE2);
+        EXPECT_EQ(host.recorded_calls.back().kind, op == OP_CREATE ? IVMC_CREATE : IVMC_CREATE2);
         host.recorded_calls.clear();
     }
 }
@@ -213,17 +213,17 @@ TEST_P(evm, call_failing_with_value)
 
         // Fails on balance check.
         execute(12000, code);
-        EXPECT_GAS_USED(EVMC_SUCCESS, 7447);
+        EXPECT_GAS_USED(IVMC_SUCCESS, 7447);
         EXPECT_EQ(host.recorded_calls.size(), 0);  // There was no call().
 
         // Fails on value transfer additional cost - minimum gas limit that triggers this condition.
         execute(747, code);
-        EXPECT_STATUS(EVMC_OUT_OF_GAS);
+        EXPECT_STATUS(IVMC_OUT_OF_GAS);
         EXPECT_EQ(host.recorded_calls.size(), 0);  // There was no call().
 
         // Fails on value transfer additional cost - maximum gas limit that triggers this condition.
         execute(744 + 9000, code);
-        EXPECT_STATUS(EVMC_OUT_OF_GAS);
+        EXPECT_STATUS(IVMC_OUT_OF_GAS);
         EXPECT_EQ(host.recorded_calls.size(), 0);  // There was no call().
     }
 }
@@ -242,10 +242,10 @@ TEST_P(evm, call_with_value)
 
     execute(40000, code);
     EXPECT_EQ(gas_used, 7447 + 32082);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     const auto& call_msg = host.recorded_calls.back();
-    EXPECT_EQ(call_msg.kind, EVMC_CALL);
+    EXPECT_EQ(call_msg.kind, IVMC_CALL);
     EXPECT_EQ(call_msg.depth, 1);
     EXPECT_EQ(call_msg.gas, 32083);
     EXPECT_EQ(call_msg.recipient, call_dst);
@@ -261,20 +261,20 @@ TEST_P(evm, call_with_value_depth_limit)
     msg.depth = 1024;
     execute(bytecode{"60ff600060ff6000600160aa618000f150"});
     EXPECT_EQ(gas_used, 7447);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     EXPECT_EQ(host.recorded_calls.size(), 0);
 }
 
 TEST_P(evm, call_depth_limit)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     msg.depth = 1024;
 
     for (auto op : {OP_CALL, OP_CALLCODE, OP_DELEGATECALL, OP_STATICCALL, OP_CREATE, OP_CREATE2})
     {
         const auto code = push(0) + 6 * OP_DUP1 + op + ret_top() + OP_INVALID;
         execute(code);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         EXPECT_EQ(host.recorded_calls.size(), 0);
         EXPECT_OUTPUT_INT(0);
     }
@@ -301,7 +301,7 @@ TEST_P(evm, call_output)
         result_is_correct = false;
         execute(code_prefix_output_1 + hex(op) + code_suffix);
         EXPECT_TRUE(result_is_correct);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         ASSERT_EQ(result.output_size, 3);
         EXPECT_EQ(result.output_data[0], 0);
         EXPECT_EQ(result.output_data[1], 0xa);
@@ -311,7 +311,7 @@ TEST_P(evm, call_output)
         result_is_correct = false;
         execute(code_prefix_output_0 + hex(op) + code_suffix);
         EXPECT_TRUE(result_is_correct);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         ASSERT_EQ(result.output_size, 3);
         EXPECT_EQ(result.output_data[0], 0);
         EXPECT_EQ(result.output_data[1], 0);
@@ -321,7 +321,7 @@ TEST_P(evm, call_output)
 
 TEST_P(evm, call_high_gas)
 {
-    rev = EVMC_HOMESTEAD;
+    rev = IVMC_HOMESTEAD;
     auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
@@ -329,7 +329,7 @@ TEST_P(evm, call_high_gas)
     for (auto call_opcode : {"f1", "f2", "f4"})
     {
         execute(5000, 5 * push(0) + push(0xaa) + push(0x134c) + call_opcode);
-        EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+        EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
     }
 }
 
@@ -343,10 +343,10 @@ TEST_P(evm, call_value_zero_to_nonexistent_account)
 
     execute(9000, code);
     EXPECT_EQ(gas_used, 729 + (call_gas - host.call_result.gas_left));
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     const auto& call_msg = host.recorded_calls.back();
-    EXPECT_EQ(call_msg.kind, EVMC_CALL);
+    EXPECT_EQ(call_msg.kind, IVMC_CALL);
     EXPECT_EQ(call_msg.depth, 1);
     EXPECT_EQ(call_msg.gas, 6000);
     EXPECT_EQ(call_msg.input_size, 64);
@@ -363,10 +363,10 @@ TEST_P(evm, call_new_account_creation_cost)
     msg.recipient = msg_dst;
 
 
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = IVMC_TANGERINE_WHISTLE;
     host.accounts[msg.recipient].set_balance(0);
     execute(code, "00");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 25000 + 739);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 25000 + 739);
     EXPECT_OUTPUT_INT(1);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     EXPECT_EQ(host.recorded_calls.back().recipient, call_dst);
@@ -377,10 +377,10 @@ TEST_P(evm, call_new_account_creation_cost)
     host.recorded_account_accesses.clear();
     host.recorded_calls.clear();
 
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = IVMC_TANGERINE_WHISTLE;
     host.accounts[msg.recipient].set_balance(1);
     execute(code, "0000000000000000000000000000000000000000000000000000000000000001");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 25000 + 9000 + 739);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 25000 + 9000 + 739);
     EXPECT_OUTPUT_INT(1);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     EXPECT_EQ(host.recorded_calls.back().recipient, call_dst);
@@ -395,10 +395,10 @@ TEST_P(evm, call_new_account_creation_cost)
     host.recorded_account_accesses.clear();
     host.recorded_calls.clear();
 
-    rev = EVMC_SPURIOUS_DRAGON;
+    rev = IVMC_SPURIOUS_DRAGON;
     host.accounts[msg.recipient].set_balance(0);
     execute(code, "00");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 739);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 739);
     EXPECT_OUTPUT_INT(1);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     EXPECT_EQ(host.recorded_calls.back().recipient, call_dst);
@@ -411,10 +411,10 @@ TEST_P(evm, call_new_account_creation_cost)
     host.recorded_account_accesses.clear();
     host.recorded_calls.clear();
 
-    rev = EVMC_SPURIOUS_DRAGON;
+    rev = IVMC_SPURIOUS_DRAGON;
     host.accounts[msg.recipient].set_balance(1);
     execute(code, "0000000000000000000000000000000000000000000000000000000000000001");
-    EXPECT_GAS_USED(EVMC_SUCCESS, 25000 + 9000 + 739);
+    EXPECT_GAS_USED(IVMC_SUCCESS, 25000 + 9000 + 739);
     EXPECT_OUTPUT_INT(1);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     EXPECT_EQ(host.recorded_calls.back().recipient, call_dst);
@@ -440,10 +440,10 @@ TEST_P(evm, callcode_new_account_create)
     host.call_result.gas_left = 1;
     execute(100000, code);
     EXPECT_EQ(gas_used, 59722);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     const auto& call_msg = host.recorded_calls.back();
-    EXPECT_EQ(call_msg.kind, EVMC_CALLCODE);
+    EXPECT_EQ(call_msg.kind, IVMC_CALLCODE);
     EXPECT_EQ(call_msg.depth, 1);
     EXPECT_EQ(call_msg.gas, 52300);
     EXPECT_EQ(call_msg.sender, call_sender);
@@ -456,7 +456,7 @@ TEST_P(evm, call_then_oog)
     auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
-    host.call_result.status_code = EVMC_FAILURE;
+    host.call_result.status_code = IVMC_FAILURE;
     host.call_result.gas_left = 0;
 
     const auto code =
@@ -468,20 +468,20 @@ TEST_P(evm, call_then_oog)
     const auto& call_msg = host.recorded_calls.back();
     EXPECT_EQ(call_msg.gas, 254);
     EXPECT_EQ(result.gas_left, 0);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, callcode_then_oog)
 {
     // Performs a CALLCODE then OOG in the same code block.
-    host.call_result.status_code = EVMC_FAILURE;
+    host.call_result.status_code = IVMC_FAILURE;
     host.call_result.gas_left = 0;
 
     const auto code =
         callcode(0xaa).gas(100).value(0).input(0, 3).output(3, 9) + 4 * add(OP_DUP1) + OP_POP;
 
     execute(825, code);
-    EXPECT_STATUS(EVMC_OUT_OF_GAS);
+    EXPECT_STATUS(IVMC_OUT_OF_GAS);
     ASSERT_EQ(host.recorded_calls.size(), 1);
     const auto& call_msg = host.recorded_calls.back();
     EXPECT_EQ(call_msg.gas, 100);
@@ -493,7 +493,7 @@ TEST_P(evm, delegatecall_then_oog)
     auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
-    host.call_result.status_code = EVMC_FAILURE;
+    host.call_result.status_code = IVMC_FAILURE;
     host.call_result.gas_left = 0;
 
     const auto code =
@@ -505,7 +505,7 @@ TEST_P(evm, delegatecall_then_oog)
     const auto& call_msg = host.recorded_calls.back();
     EXPECT_EQ(call_msg.gas, 254);
     EXPECT_EQ(result.gas_left, 0);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, staticcall_then_oog)
@@ -514,7 +514,7 @@ TEST_P(evm, staticcall_then_oog)
     auto call_dst = ivmc_address{};
     call_dst.bytes[19] = 0xaa;
     host.accounts[call_dst] = {};
-    host.call_result.status_code = EVMC_FAILURE;
+    host.call_result.status_code = IVMC_FAILURE;
     host.call_result.gas_left = 0;
 
     const auto code =
@@ -526,7 +526,7 @@ TEST_P(evm, staticcall_then_oog)
     const auto& call_msg = host.recorded_calls.back();
     EXPECT_EQ(call_msg.gas, 254);
     EXPECT_EQ(result.gas_left, 0);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, staticcall_input)
@@ -548,7 +548,7 @@ TEST_P(evm, call_with_value_low_gas)
     {
         auto code = 4 * push(0) + push(1) + 2 * push(0) + call_op + OP_POP;
         execute(9721, code);
-        EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+        EXPECT_EQ(result.status_code, IVMC_SUCCESS);
         EXPECT_EQ(result.gas_left, 2300 - 2);
     }
 }
@@ -561,7 +561,7 @@ TEST_P(evm, call_oog_after_balance_check)
     {
         auto code = 4 * push(0) + push(1) + 2 * push(0) + op + OP_SELFDESTRUCT;
         execute(12420, code);
-        EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+        EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
     }
 }
 
@@ -575,26 +575,26 @@ TEST_P(evm, call_oog_after_depth_check)
     {
         const auto code = 4 * push(0) + push(1) + 2 * push(0) + op + OP_SELFDESTRUCT;
         execute(12420, code);
-        EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+        EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
     }
 
-    rev = EVMC_TANGERINE_WHISTLE;
+    rev = IVMC_TANGERINE_WHISTLE;
     const auto code = 7 * push(0) + OP_CALL + OP_SELFDESTRUCT;
     execute(721, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 
     execute(721 + 5000 - 1, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, create_oog_after)
 {
-    rev = EVMC_CONSTANTINOPLE;
+    rev = IVMC_CONSTANTINOPLE;
     for (auto op : {OP_CREATE, OP_CREATE2})
     {
         auto code = 4 * push(0) + op + OP_SELFDESTRUCT;
         execute(39000, code);
-        EXPECT_STATUS(EVMC_OUT_OF_GAS);
+        EXPECT_STATUS(IVMC_OUT_OF_GAS);
     }
 }
 
@@ -620,14 +620,14 @@ TEST_P(evm, returndatasize)
     EXPECT_EQ(result.output_data[0], std::size(call_output));
 
     host.call_result.output_size = 1;
-    host.call_result.status_code = EVMC_FAILURE;
+    host.call_result.status_code = IVMC_FAILURE;
     execute(code);
     EXPECT_EQ(gas_used, 735);
     ASSERT_EQ(result.output_size, 1);
     EXPECT_EQ(result.output_data[0], 1);
 
     host.call_result.output_size = 0;
-    host.call_result.status_code = EVMC_INTERNAL_ERROR;
+    host.call_result.status_code = IVMC_INTERNAL_ERROR;
     execute(code);
     EXPECT_EQ(gas_used, 735);
     ASSERT_EQ(result.output_size, 1);
@@ -667,9 +667,9 @@ TEST_P(evm, returndatacopy_cost)
     host.call_result.output_size = sizeof(call_output);
     auto code = "60008080808080fa6001600060003e";
     execute(736, code);
-    EXPECT_EQ(result.status_code, EVMC_SUCCESS);
+    EXPECT_EQ(result.status_code, IVMC_SUCCESS);
     execute(735, code);
-    EXPECT_EQ(result.status_code, EVMC_OUT_OF_GAS);
+    EXPECT_EQ(result.status_code, IVMC_OUT_OF_GAS);
 }
 
 TEST_P(evm, returndatacopy_outofrange)
@@ -678,11 +678,11 @@ TEST_P(evm, returndatacopy_outofrange)
     host.call_result.output_data = &call_output;
     host.call_result.output_size = sizeof(call_output);
     execute(735, "60008080808080fa6002600060003e");
-    EXPECT_EQ(result.status_code, EVMC_INVALID_MEMORY_ACCESS);
+    EXPECT_EQ(result.status_code, IVMC_INVALID_MEMORY_ACCESS);
 
     execute(735, "60008080808080fa6001600160003e");
-    EXPECT_EQ(result.status_code, EVMC_INVALID_MEMORY_ACCESS);
+    EXPECT_EQ(result.status_code, IVMC_INVALID_MEMORY_ACCESS);
 
     execute(735, "60008080808080fa6000600260003e");
-    EXPECT_EQ(result.status_code, EVMC_INVALID_MEMORY_ACCESS);
+    EXPECT_EQ(result.status_code, IVMC_INVALID_MEMORY_ACCESS);
 }
