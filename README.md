@@ -1,7 +1,6 @@
 # ivmone
 
 [![readme style standard badge]][standard readme]
-[![appveyor badge]][appveyor]
 [![license badge]][Apache License, Version 2.0]
 
 > Fast ILCOIN Virtual Machine implementation
@@ -121,7 +120,7 @@ docker run --entrypoint ivmone-bench ILCOINDevelopmentTeam/ivmone /src/test/benc
 
 ## Maintainer
 
-Paweł Bylica [@chfast]
+ILCOIN Development Team [@ILCOINDevelopmentTeam]
 
 ## License
 
