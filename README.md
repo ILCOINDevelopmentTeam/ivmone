@@ -120,7 +120,7 @@ docker run --entrypoint ivmone-bench ILCOINDevelopmentTeam/ivmone /src/test/benc
 
 ## Maintainer
 
-ILCOIN Development Team [@ILCOINDevelopmentTeam]
+ILCOIN Development Team
 
 ## License
 
