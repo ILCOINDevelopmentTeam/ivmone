@@ -1,9 +1,6 @@
 # ivmone
 
-[![ethereum badge]][ethereum]
 [![readme style standard badge]][standard readme]
-[![codecov badge]][codecov]
-[![circleci badge]][circleci]
 [![appveyor badge]][appveyor]
 [![license badge]][Apache License, Version 2.0]
 
@@ -66,7 +63,7 @@ To build the ivmone IVMC module (shared library), test, and benchmark:
 
 1. Fetch the source code:
    ```
-   git clone --recursive https://github.com/ethereum/ivmone
+   git clone --recursive https://github.com/ILCOINDevelopmentTeam/ivmone
    cd ivmone
    ```
 
@@ -108,14 +105,14 @@ ivm-test ./ivmone.so
 ### Docker
 
 Docker images with ivmone are available on Docker Hub:
-https://hub.docker.com/r/ethereum/ivmone.
+https://hub.docker.com/r/ILCOINDevelopmentTeam/ivmone.
 
 Having the ivmone shared library inside a docker is not very useful on its own,
 but the image can be used as the base of another one or you can run benchmarks
 with it.
 
 ```bash
-docker run --entrypoint ivmone-bench ethereum/ivmone /src/test/benchmarks
+docker run --entrypoint ivmone-bench ILCOINDevelopmentTeam/ivmone /src/test/benchmarks
 ```
 
 ## References
@@ -135,20 +132,14 @@ Licensed under the [Apache License, Version 2.0].
 
 [@chfast]: https://github.com/chfast
 [appveyor]: https://ci.appveyor.com/project/chfast/ivmone/branch/master
-[circleci]: https://circleci.com/gh/ethereum/ivmone/tree/master
-[codecov]: https://codecov.io/gh/ethereum/ivmone/
 [Apache License, Version 2.0]: LICENSE
 [ILCOIN]: https://ilcoincrypto.com/
 [IVMC]: https://github.com/ILCOINDevelopmentTeam/ivmc
 [Ewasm]: https://github.com/ewasm
 [intx]: https://github.com/chfast/intx
 [ethash]: https://github.com/chfast/ethash
-[Releases]: https://github.com/ethereum/ivmone/releases
+[Releases]: https://github.com/ILCOINDevelopmentTeam/ivmone/releases
 [standard readme]: https://github.com/RichardLitt/standard-readme
 
 [appveyor badge]: https://img.shields.io/appveyor/ci/chfast/ivmone/master.svg?logo=appveyor
-[circleci badge]: https://img.shields.io/circleci/project/github/ethereum/ivmone/master.svg?logo=circleci
-[codecov badge]: https://img.shields.io/codecov/c/github/ethereum/ivmone.svg?logo=codecov
-[ethereum badge]: https://img.shields.io/badge/ethereum-IVM-informational.svg?logo=ethereum
-[license badge]: https://img.shields.io/github/license/ethereum/ivmone.svg?logo=apache
 [readme style standard badge]: https://img.shields.io/badge/readme%20style-standard-brightgreen.svg
