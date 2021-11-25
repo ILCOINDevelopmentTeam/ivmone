@@ -142,4 +142,5 @@ Licensed under the [Apache License, Version 2.0].
 [standard readme]: https://github.com/RichardLitt/standard-readme
 
 [appveyor badge]: https://img.shields.io/appveyor/ci/chfast/ivmone/master.svg?logo=appveyor
+[license badge]: https://img.shields.io/github/license/ethereum/ivmone.svg?logo=apach
 [readme style standard badge]: https://img.shields.io/badge/readme%20style-standard-brightgreen.svg
