@@ -45,17 +45,8 @@ The option `O` controls the "optimization level":
 ### As geth plugin
 
 ivmone implements the [IVMC] API for ILCOIN Virtual Machines.
-It can be used as a plugin replacing geth's internal IVM. But for that a modified
-version of geth is needed. The [Ewasm]'s fork
-of go-ethereum provides [binary releases of geth with IVMC support](https://github.com/ewasm/go-ethereum/releases).
 
 Next, download ivmone from [Releases].
-
-Start the downloaded geth with `--vm.ivm` option pointing to the ivmone shared library.
-
-```bash
-geth --vm.ivm=./libivmone.so
-```
 
 ### Building from source
 To build the ivmone IVMC module (shared library), test, and benchmark:
@@ -99,19 +90,6 @@ The collection of tests comes from the ivmone project.
 
 ```bash
 ivm-test ./ivmone.so
-```
-
-### Docker
-
-Docker images with ivmone are available on Docker Hub:
-https://hub.docker.com/r/ILCOINDevelopmentTeam/ivmone.
-
-Having the ivmone shared library inside a docker is not very useful on its own,
-but the image can be used as the base of another one or you can run benchmarks
-with it.
-
-```bash
-docker run --entrypoint ivmone-bench ILCOINDevelopmentTeam/ivmone /src/test/benchmarks
 ```
 
 ## References
